@@ -1,4 +1,4 @@
-const CACHE = 'life-planner-v1';
+const CACHE = 'life-planner-v2';
 
 const ASSETS = [
   '/life-planner/',
