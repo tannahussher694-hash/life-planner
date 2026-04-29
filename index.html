@@ -138,8 +138,7 @@ select{cursor:pointer;}
 .stars .star.active{color:var(--gold);}
 .confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
 .hidden{display:none!important;}
-.fade-in{animation:fadeIn .35s ease;}
-@keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.fade-in{opacity:1;}
 .heatmap{display:grid;grid-template-columns:repeat(53,1fr);gap:2px;}
 .heatmap-cell{width:100%;aspect-ratio:1;border-radius:2px;background:var(--bg2);}
 .slider-container{position:relative;padding:4px 0;}
@@ -343,8 +342,8 @@ function navigate(id){
   const main=document.getElementById('mainContent');
   main.innerHTML='';
   main.className='main fade-in';
-  const renderers={today:renderToday,dailylog:renderDailyLog,calendar:renderCalendar,workouts:renderWorkouts,goals:renderGoals,habits:renderHabits,journal:renderJournal,gratitude:renderGratitude,reading:renderReading,money:renderMoney,settings:renderSettings};
   try{
+    const renderers={today:renderToday,dailylog:renderDailyLog,calendar:renderCalendar,workouts:renderWorkouts,goals:renderGoals,habits:renderHabits,journal:renderJournal,gratitude:renderGratitude,reading:renderReading,money:renderMoney,settings:renderSettings};
     if(renderers[id])renderers[id](main);
   }catch(err){
     main.innerHTML=`<div style="padding:32px;"><h2 style="color:#E07856;margin-bottom:12px;">⚠️ Render Error in "${id}"</h2><pre style="background:#f5edd5;padding:16px;border-radius:8px;font-size:.8rem;white-space:pre-wrap;word-break:break-all;">${err.stack||err.message||String(err)}</pre><p style="margin-top:12px;font-size:.85rem;color:#475569;">Send this to Claude to fix it.</p></div>`;
@@ -1005,6 +1004,40 @@ window.saveJournalEntry=function(){
 };
 
 window.deleteJournalEntry=function(id){const entries=DB.get('journal_entries',[]).filter(e=>e.id!==id);DB.set('journal_entries',entries);navigate('journal');};
+
+/* ===== GRATITUDE ===== */
+function renderGratitude(el){
+  const todayKey=today();
+  const todayG=DB.get('gratitude_'+todayKey,[' ',' ',' ']);
+  const allKeys=DB.keys().filter(k=>k.startsWith('gratitude_')).sort().reverse();
+  const past=allKeys.filter(k=>k!=='gratitude_'+todayKey).slice(0,30);
+
+  el.innerHTML=`
+  <h1 class="page-title">Gratitude</h1>
+  <p class="page-sub">Three things every day. That's the practice.</p>
+
+  <div class="card mb-20">
+    <div class="card-title">🙏 Today — ${fmtDate(todayKey)}</div>
+    ${[0,1,2].map(i=>`
+    <div class="form-group">
+      <label>Grateful for #${i+1}</label>
+      <input placeholder="Something I'm grateful for..." value="${(todayG[i]||'').trim().replace(/"/g,'&quot;')}" oninput="saveGratitude(${i},this.value)">
+    </div>`).join('')}
+  </div>
+
+  ${past.length?`
+  <div class="section-title">Archive</div>
+  ${past.map(k=>{
+    const d=k.replace('gratitude_','');
+    const entries=DB.get(k,[]).filter(v=>v&&v.trim()&&v.trim()!==' ');
+    if(!entries.length)return'';
+    return`<div class="card mb-12">
+      <div class="grat-archive-date">${fmtDate(d)}</div>
+      ${entries.map(v=>`<div class="grat-item">🙏 <span>${v.replace(/</g,'&lt;')}</span></div>`).join('')}
+    </div>`;
+  }).join('')}`:'<div class="empty">Your gratitude archive will appear here as you build the daily habit.</div>'}
+  `;
+}
 
 /* ===== READING ===== */
 function renderReading(el){
