@@ -344,7 +344,12 @@ function navigate(id){
   main.innerHTML='';
   main.className='main fade-in';
   const renderers={today:renderToday,dailylog:renderDailyLog,calendar:renderCalendar,workouts:renderWorkouts,goals:renderGoals,habits:renderHabits,journal:renderJournal,gratitude:renderGratitude,reading:renderReading,money:renderMoney,settings:renderSettings};
-  if(renderers[id])renderers[id](main);
+  try{
+    if(renderers[id])renderers[id](main);
+  }catch(err){
+    main.innerHTML=`<div style="padding:32px;"><h2 style="color:#E07856;margin-bottom:12px;">⚠️ Render Error in "${id}"</h2><pre style="background:#f5edd5;padding:16px;border-radius:8px;font-size:.8rem;white-space:pre-wrap;word-break:break-all;">${err.stack||err.message||String(err)}</pre><p style="margin-top:12px;font-size:.85rem;color:#475569;">Send this to Claude to fix it.</p></div>`;
+    console.error('Render error in',id,err);
+  }
 }
 
 function buildNav(){
