@@ -568,10 +568,36 @@ function renderDailyLog(el){
 
   <div class="card">
     <div class="card-title">🌙 End-of-Day Reflection</div>
-    <div class="form-group"><label>Biggest win</label><textarea rows="2" onchange="saveDayLogNested('reflection','win',this.value)">${(log.reflection.win||'').replace(/</g,'&lt;')}</textarea></div>
-    <div class="form-group"><label>What I learned</label><textarea rows="2" onchange="saveDayLogNested('reflection','learned',this.value)">${(log.reflection.learned||'').replace(/</g,'&lt;')}</textarea></div>
-    <div class="form-group"><label>Tomorrow's top 3</label><textarea rows="2" onchange="saveDayLogNested('reflection','tomorrow',this.value)">${(log.reflection.tomorrow||'').replace(/</g,'&lt;')}</textarea></div>
-  </div>`;
+    <div class="form-group"><label>Biggest win</label><textarea rows="2" oninput="saveDayLogNested('reflection','win',this.value)">${(log.reflection.win||'').replace(/</g,'&lt;')}</textarea></div>
+    <div class="form-group"><label>What I learned</label><textarea rows="2" oninput="saveDayLogNested('reflection','learned',this.value)">${(log.reflection.learned||'').replace(/</g,'&lt;')}</textarea></div>
+    <div class="form-group"><label>Tomorrow's top 3</label><textarea rows="2" oninput="saveDayLogNested('reflection','tomorrow',this.value)">${(log.reflection.tomorrow||'').replace(/</g,'&lt;')}</textarea></div>
+  </div>
+
+  <div class="save-log-bar"><button class="btn btn-primary" onclick="showToast('Log saved ✓',2500)">💾 Save Log</button></div>
+
+  <div class="section-title">Past Daily Logs</div>
+  ${(()=>{
+    const pastKeys=DB.keys().filter(k=>k.startsWith('daylog_')&&k!=='daylog_'+d).sort().reverse().slice(0,30);
+    if(!pastKeys.length)return'<div class="empty">No past logs yet. Keep showing up.</div>';
+    return pastKeys.map(k=>{
+      const kd=k.replace('daylog_','');
+      const pl=DB.get(k,{});
+      const slotCount=Object.keys(pl.slots||{}).length;
+      return`<div class="card card-sm mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <span class="font-semi text-sm">${fmtDate(kd)}</span>
+          <div class="flex gap-8">
+            ${pl.mood!=null?`<span class="tag tag-sage">Mood ${pl.mood}/10</span>`:''}
+            ${pl.energy?`<span class="tag tag-gold">Energy ${pl.energy}/10</span>`:''}
+            ${pl.sleep&&pl.sleep.hours?`<span class="tag tag-navy">😴 ${pl.sleep.hours}h</span>`:''}
+          </div>
+        </div>
+        ${slotCount?`<div class="text-xs color-text2 mb-4">${slotCount} time block${slotCount!==1?'s':''} logged</div>`:''}
+        ${pl.reflection&&pl.reflection.win?`<div class="text-xs color-text2"><span class="font-semi">Win:</span> ${pl.reflection.win.replace(/</g,'&lt;').slice(0,120)}${pl.reflection.win.length>120?'…':''}</div>`:''}
+        ${pl.reflection&&pl.reflection.learned?`<div class="text-xs color-text2 mt-2"><span class="font-semi">Learned:</span> ${pl.reflection.learned.replace(/</g,'&lt;').slice(0,120)}${pl.reflection.learned.length>120?'…':''}</div>`:''}
+      </div>`;
+    }).join('');
+  })()}`;
 }
 
 window.saveDayLog=function(k,v){const d=today();const log=DB.get('daylog_'+d,{slots:{},mood:5,energy:5,sleep:{hours:7,quality:3},water:0,reflection:{}});log[k]=v;DB.set('daylog_'+d,log);if(k==='mood'){const moods=DB.get('dailylog_moods',{});moods[d]=v;DB.set('dailylog_moods',moods);}};
@@ -603,11 +629,13 @@ function renderCalendar(el){
       ${Array.from({length:daysInMonth},(_,i)=>{
         const day=i+1;const ds=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
         const dayEvents=events.filter(e=>e.date===ds||isRecurring(e,ds));
+        const dayWkts=DB.get('workouts',[]).filter(w=>w.date===ds);
         const isToday=ds===today();
-        return`<div class="card-sm clickable" style="padding:6px;min-height:56px;${isToday?'border:2px solid var(--sage);':''}" onclick="showDayEvents('${ds}')">
+        return`<div class="card-sm" style="padding:6px;min-height:56px;${isToday?'border:2px solid var(--sage);':''}" onclick="showDayEvents('${ds}')" ondragover="event.preventDefault()" ondrop="dropCalEvent(event,'${ds}')">
           <div class="text-xs font-semi ${isToday?'color-sage':''}">${day}</div>
-          ${dayEvents.slice(0,2).map(e=>`<div class="text-xs truncate" style="color:${catColors[e.category]||'var(--text2)'};margin-top:2px;">${e.title}</div>`).join('')}
-          ${dayEvents.length>2?`<div class="text-xs color-text2">+${dayEvents.length-2}</div>`:''}
+          ${dayEvents.slice(0,2).map(e=>`<div class="text-xs truncate" draggable="true" ondragstart="dragCalEvent(event,'${e.id}')" onclick="event.stopPropagation()" style="color:${catColors[e.category]||'var(--text2)'};margin-top:2px;cursor:grab;">${e.title}</div>`).join('')}
+          ${dayWkts.slice(0,1).map(w=>`<div class="text-xs truncate" style="color:var(--coral);margin-top:2px;">💪 ${w.type}</div>`).join('')}
+          ${dayEvents.length>2?`<div class="text-xs color-text2">+${dayEvents.length-2} more</div>`:''}
         </div>`;}).join('')}
     </div>`;
   }
@@ -637,15 +665,22 @@ function isRecurring(e,ds){
 
 window.showDayEvents=function(ds){
   const events=DB.get('events',[]).filter(e=>e.date===ds||isRecurring(e,ds));
+  const dayWorkouts=DB.get('workouts',[]).filter(w=>w.date===ds);
+  const dayLog=DB.get('daylog_'+ds,{});
+  const logSlots=Object.entries(dayLog.slots||{});
+  const hasContent=events.length||dayWorkouts.length||logSlots.length;
   openModal(`<h2>${fmtDate(ds)}</h2>
-    ${events.length?events.map(e=>`<div class="card card-sm mb-8">
+    ${events.length?`<div class="text-xs font-semi color-text2 mb-6">📅 EVENTS</div>${events.map(e=>`<div class="card card-sm mb-8">
       <div class="flex items-center justify-between">
-        <div><span class="font-semi">${e.title}</span>${e.time?` <span class="text-xs color-text2">${e.time}</span>`:''}</div>
+        <div><span class="font-semi">${e.title}</span>${e.time?` <span class="text-xs color-text2">${fmtTime(e.time)}${e.endTime?' – '+fmtTime(e.endTime):''}</span>`:''}</div>
         <div class="flex gap-8"><span class="tag" style="background:${catColors[e.category]||'#666'}22;color:${catColors[e.category]||'#666'}">${e.category||'General'}</span>
         <button class="btn-ghost text-xs" onclick="deleteEvent('${e.id}')">✕</button></div>
       </div>
       ${e.notes?`<p class="text-xs color-text2 mt-8">${e.notes}</p>`:''}
-    </div>`).join(''):`<p class="empty">No events this day. Add one!</p>`}
+    </div>`).join('')}`:''}
+    ${dayWorkouts.length?`<div class="text-xs font-semi color-text2 mb-6 mt-8">💪 WORKOUTS</div>${dayWorkouts.map(w=>`<div class="card card-sm mb-6"><span class="font-semi">${w.type}</span> <span class="text-xs color-text2">${w.duration}min · Intensity ${w.intensity}/10</span>${w.notes?`<div class="text-xs color-text2 mt-4">${w.notes}</div>`:''}</div>`).join('')}`:''}
+    ${logSlots.length?`<div class="text-xs font-semi color-text2 mb-6 mt-8">🗓 DAILY LOG</div>${logSlots.map(([t,s])=>`<div class="flex items-center gap-8 mb-4"><span class="text-xs color-text2" style="width:44px;flex-shrink:0">${t}</span><span class="tag" style="background:${catColors[s.cat]||'#666'}22;color:${catColors[s.cat]||'#666'}">${s.cat}</span><span class="text-sm">${s.text}</span></div>`).join('')}`:''}
+    ${!hasContent?`<p class="empty">No events this day. Add one!</p>`:''}
     <div class="modal-actions"><button class="btn btn-primary btn-sm" onclick="closeModal();addEvent('${ds}')">+ Add Event</button><button class="btn btn-secondary btn-sm" onclick="closeModal()">Close</button></div>`);
 };
 
@@ -653,7 +688,7 @@ window.addEvent=function(prefill){
   const ds=prefill||today();
   openModal(`<h2>New Event</h2>
     <div class="form-group"><label>Title</label><input id="evTitle"></div>
-    <div class="form-row"><div class="form-group"><label>Date</label><input type="date" id="evDate" value="${ds}"></div><div class="form-group"><label>Time</label><input type="time" id="evTime"></div></div>
+    <div class="form-row"><div class="form-group"><label>Date</label><input type="date" id="evDate" value="${ds}"></div><div class="form-group"><label>Start Time</label><input type="time" id="evTime"></div><div class="form-group"><label>End Time</label><input type="time" id="evEndTime"></div></div>
     <div class="form-row"><div class="form-group"><label>Category</label><select id="evCat">${cats.map(c=>`<option>${c}</option>`).join('')}</select></div>
     <div class="form-group"><label>Recurring</label><select id="evRecur"><option value="none">None</option><option value="daily">Daily</option><option value="weekly">Weekly</option><option value="monthly">Monthly</option></select></div></div>
     <div class="form-group"><label>Notes</label><textarea id="evNotes" rows="2"></textarea></div>
@@ -663,10 +698,12 @@ window.addEvent=function(prefill){
 window.saveEvent=function(){
   const t=document.getElementById('evTitle').value;if(!t)return;
   const events=DB.get('events',[]);
-  events.push({id:Date.now().toString(36),title:t,date:document.getElementById('evDate').value,time:document.getElementById('evTime').value,category:document.getElementById('evCat').value,recurring:document.getElementById('evRecur').value,notes:document.getElementById('evNotes').value});
+  events.push({id:Date.now().toString(36),title:t,date:document.getElementById('evDate').value,time:document.getElementById('evTime').value,endTime:document.getElementById('evEndTime').value,category:document.getElementById('evCat').value,recurring:document.getElementById('evRecur').value,notes:document.getElementById('evNotes').value});
   DB.set('events',events);closeModal();navigate('calendar');
 };
 window.deleteEvent=function(id){const events=DB.get('events',[]).filter(e=>e.id!==id);DB.set('events',events);closeModal();navigate('calendar');};
+window.dragCalEvent=function(ev,id){ev.stopPropagation();ev.dataTransfer.setData('text/plain',id);ev.dataTransfer.effectAllowed='move';};
+window.dropCalEvent=function(ev,ds){ev.preventDefault();const id=ev.dataTransfer.getData('text/plain');if(!id)return;const events=DB.get('events',[]);const e=events.find(x=>x.id===id);if(e){if(e.recurring&&e.recurring!=='none'){showToast('Cannot move recurring events');return;}e.date=ds;DB.set('events',events);navigate('calendar');};};
 
 /* ===== WORKOUTS ===== */
 function renderWorkouts(el){
@@ -976,7 +1013,10 @@ window.newJournalEntry=function(){
   openModal(`<h2>New Journal Entry</h2>
     <div class="form-group"><label>Date</label><input type="date" id="jeDate" value="${today()}"></div>
     <div class="form-group"><label>Type</label><select id="jeType"><option>Journal</option><option>Reflection</option><option>Weekly Review</option><option>Monthly Review</option></select></div>
-    <div class="form-group"><label>Write freely (use **bold** and *italic*)</label><textarea id="jeText" rows="8" placeholder="What's on your mind?"></textarea></div>
+    <div class="form-group"><label>📚 One thing I learned today</label><input id="jeLearned" placeholder="Today I learned..."></div>
+    <div class="form-group"><label>🔧 One thing I can do better</label><input id="jeBetter" placeholder="Next time I'll..."></div>
+    <div class="form-group"><label>⭐ One thing I excelled at</label><input id="jeExcelled" placeholder="I'm proud that I..."></div>
+    <div class="form-group"><label>Write freely (use **bold** and *italic*)</label><textarea id="jeText" rows="5" placeholder="What's on your mind?"></textarea></div>
     <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveJournalEntry()">Save</button></div>`);
 };
 
@@ -997,9 +1037,18 @@ window.saveWeeklyReview=function(){
 };
 
 window.saveJournalEntry=function(){
-  const text=document.getElementById('jeText').value;if(!text)return;
+  const text=document.getElementById('jeText').value;
+  const learned=document.getElementById('jeLearned')?document.getElementById('jeLearned').value:'';
+  const better=document.getElementById('jeBetter')?document.getElementById('jeBetter').value:'';
+  const excelled=document.getElementById('jeExcelled')?document.getElementById('jeExcelled').value:'';
+  if(!text&&!learned&&!better&&!excelled)return;
+  let fullText='';
+  if(learned)fullText+=`**📚 Learned:** ${learned}\n`;
+  if(better)fullText+=`**🔧 Do Better:** ${better}\n`;
+  if(excelled)fullText+=`**⭐ Excelled At:** ${excelled}\n`;
+  if(text)fullText+=(fullText?'\n':'')+text;
   const entries=DB.get('journal_entries',[]);
-  entries.push({id:Date.now().toString(36),date:document.getElementById('jeDate').value,type:document.getElementById('jeType').value,text});
+  entries.push({id:Date.now().toString(36),date:document.getElementById('jeDate').value,type:document.getElementById('jeType').value,text:fullText,learned,better,excelled});
   DB.set('journal_entries',entries);closeModal();navigate('journal');
 };
 
