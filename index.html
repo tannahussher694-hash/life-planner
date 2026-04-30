@@ -231,8 +231,9 @@ const DB={
 
 /* ===== OBSIDIAN SYNC ===== */
 const ObsidianAPI={
-  cfg(){return DB.get('obsidian_cfg',{enabled:false,apiKey:'',port:27124,autoSync:false});},
+  cfg(){return DB.get('obsidian_cfg',{enabled:false,apiKey:'',port:27124});},
   saveCfg(c){DB.set('obsidian_cfg',c);},
+  guard(){const c=this.cfg();if(!c.enabled||!c.apiKey){showToast('Set up Obsidian sync in Settings first');return false;}return true;},
   async req(method,path,body){
     const c=this.cfg();
     const res=await fetch(`https://localhost:${c.port}/vault/${path.replace(/^\/+/,'')}`,{
@@ -252,18 +253,19 @@ const ObsidianAPI={
     }catch(e){return{ok:false,msg:'Cannot reach Obsidian. Make sure it\'s open with Local REST API plugin running, and you\'ve accepted the certificate at https://localhost:27124'};}
   },
   async write(path,content){await this.req('PUT',path,content);},
+
+  /* ── BUILDERS ── */
   buildDailyMd(d){
     const log=DB.get('daylog_'+d,{mood:5,energy:5,sleep:{hours:7,quality:3},water:0,reflection:{}});
     const habits=DB.get('habits',[]).filter(h=>h.active!==false);
     const checks=DB.get('habit_checks_'+d,{});
     const grat=DB.get('gratitude_'+d,[' ',' ',' ']);
     const learned=DB.get('learned_'+d,'');
-    const intentions=DB.get('intentions_'+d,[' ',' ',' ']);
     const nextDay=(ds=>{const dt=new Date(ds+'T12:00:00');dt.setDate(dt.getDate()+1);return dt.toISOString().slice(0,10);})(d);
     const tomorrowInt=DB.get('intentions_'+nextDay,[' ',' ',' ']);
     const workouts=DB.get('workouts',[]).filter(w=>w.date===d);
     const journals=DB.get('journal_entries',[]).filter(e=>e.date===d);
-    let md=`---\ndate: ${d}\ntags: [daily-log, life-planner]\nsource: Life Planner App\n---\n# Daily Log — ${fmtDate(d)}\n\n`;
+    let md=`---\ndate: ${d}\ntags: [daily-log, life-planner]\n---\n# Daily Log — ${fmtDate(d)}\n\n`;
     md+=`## Mood & Energy\n- Mood: ${log.mood}/10\n- Energy: ${log.energy}/10\n- Sleep: ${(log.sleep||{}).hours||0}h (quality ${(log.sleep||{}).quality||0}/5)\n- Water: ${log.water||0}/8 glasses\n\n`;
     if(habits.length){md+=`## Habits\n`;habits.forEach(h=>{md+=`- [${checks[h.id]?'x':' '}] ${h.name}\n`;});md+='\n';}
     const g=grat.filter(v=>v&&v.trim()&&v.trim()!==' ');
@@ -292,7 +294,7 @@ const ObsidianAPI={
   buildGoalsMd(){
     const goals=DB.get('goals_2026',[]);
     const vision=DB.get('vision_2026','');
-    let md=`---\ntags: [goals, life-planner, 2026]\nlast-synced: ${today()}\nsource: Life Planner App\n---\n# 2026 Goals (Life Planner Sync)\n\n`;
+    let md=`---\ntags: [goals, life-planner, 2026]\nlast-synced: ${today()}\n---\n# 2026 Goals\n\n`;
     if(vision)md+=`## Vision 2026\n${vision}\n\n`;
     const cats=[...new Set(goals.map(g=>g.category))];
     cats.forEach(cat=>{
@@ -310,26 +312,167 @@ const ObsidianAPI={
     });
     return md;
   },
+  buildHabitsMd(){
+    const habits=DB.get('habits',[]);
+    let md=`---\ntags: [habits, life-planner]\nlast-synced: ${today()}\n---\n# Habits Tracker\n\n`;
+    habits.forEach(h=>{
+      md+=`## ${h.name}\n- Current streak: ${h.streak||0} days\n- Longest streak: ${h.longestStreak||0} days\n\n`;
+      const recentDays=[];const d=new Date();
+      for(let i=0;i<14;i++){const dk=new Date(d);dk.setDate(d.getDate()-i);const ds=dk.toISOString().slice(0,10);const checks=DB.get('habit_checks_'+ds,{});recentDays.push({date:ds,done:!!checks[h.id]});}
+      md+=`**Last 14 days:**\n`;
+      recentDays.reverse().forEach(day=>{md+=`- ${day.date}: ${day.done?'✓':'✗'}\n`;});
+      md+='\n';
+    });
+    return md;
+  },
+  buildWorkoutsMd(){
+    const workouts=DB.get('workouts',[]).slice().reverse();
+    const metrics=DB.get('body_metrics',[]);
+    let md=`---\ntags: [workouts, training, life-planner]\nlast-synced: ${today()}\n---\n# Workout Log\n\n`;
+    if(workouts.length){
+      workouts.forEach(w=>{
+        md+=`## ${fmtDate(w.date)} — ${w.type}\n`;
+        md+=`- Duration: ${w.duration} min\n- Intensity: ${w.intensity}/10\n`;
+        if(w.notes)md+=`- Notes: ${w.notes}\n`;
+        if(w.exercises&&w.exercises.length){
+          md+=`\n**Exercises:**\n`;
+          w.exercises.forEach(e=>{md+=`- ${e.name}: ${e.sets}×${e.reps}${e.weight?' @ '+e.weight+'lbs':''}\n`;});
+        }
+        md+='\n';
+      });
+    }else{md+=`_No workouts logged yet._\n\n`;}
+    if(metrics.length){
+      md+=`## Body Metrics\n`;
+      metrics.forEach(m=>{
+        md+=`### ${m.date}\n`;
+        if(m.weight)md+=`- Weight: ${m.weight} lbs\n`;
+        if(m.bf)md+=`- Body Fat: ${m.bf}%\n`;
+        if(m.chest)md+=`- Chest: ${m.chest} in\n`;
+        if(m.waist)md+=`- Waist: ${m.waist} in\n`;
+        md+='\n';
+      });
+    }
+    return md;
+  },
+  buildFinanceMd(){
+    const f=DB.get('finance',{income:[],expenses:[],savingsGoal:0,savingsCurrent:0,netWorth:[],debts:[]});
+    const thisMonth=new Date().toISOString().slice(0,7);
+    const mIncome=f.income.filter(i=>i.month===thisMonth).reduce((a,i)=>a+i.amount,0);
+    const mExpenses=f.expenses.filter(i=>i.month===thisMonth).reduce((a,i)=>a+i.amount,0);
+    let md=`---\ntags: [finance, money, life-planner]\nlast-synced: ${today()}\n---\n# Finance Tracker\n\n`;
+    md+=`## ${thisMonth} Summary\n- Income: $${mIncome.toLocaleString()}\n- Expenses: $${mExpenses.toLocaleString()}\n- Net: $${(mIncome-mExpenses).toLocaleString()}\n\n`;
+    md+=`## Savings\n- Goal: $${(f.savingsGoal||0).toLocaleString()}\n- Current: $${(f.savingsCurrent||0).toLocaleString()}\n- Progress: ${f.savingsGoal?Math.round(f.savingsCurrent/f.savingsGoal*100):0}%\n\n`;
+    if(f.debts&&f.debts.length){
+      md+=`## Debts\n`;
+      f.debts.forEach(d=>{const pct=d.original?Math.round((1-d.remaining/d.original)*100):0;md+=`- **${d.name}**: $${d.remaining.toLocaleString()} remaining (${pct}% paid off)\n`;});
+      md+='\n';
+    }
+    if(f.income&&f.income.length){
+      md+=`## All Income\n`;
+      f.income.forEach(i=>{md+=`- ${i.month}: ${i.label} — $${i.amount.toLocaleString()}\n`;});
+      md+='\n';
+    }
+    if(f.expenses&&f.expenses.length){
+      md+=`## All Expenses\n`;
+      f.expenses.forEach(i=>{md+=`- ${i.month}: ${i.label} — $${i.amount.toLocaleString()}\n`;});
+      md+='\n';
+    }
+    if(f.netWorth&&f.netWorth.length){
+      md+=`## Net Worth History\n`;
+      f.netWorth.forEach(n=>{md+=`- ${n.month}: $${n.amount.toLocaleString()}\n`;});
+    }
+    return md;
+  },
+  buildReadingMd(){
+    const books=DB.get('books',[]);
+    let md=`---\ntags: [reading, books, life-planner]\nlast-synced: ${today()}\n---\n# Reading List\n\n`;
+    const status=['Reading','To Read','Finished','Abandoned'];
+    status.forEach(s=>{
+      const list=books.filter(b=>b.status===s);
+      if(!list.length)return;
+      md+=`## ${s}\n`;
+      list.forEach(b=>{
+        md+=`### ${b.title}${b.author?' — *'+b.author+'*':''}\n`;
+        if(b.progress!=null)md+=`- Progress: ${b.progress}%\n`;
+        if(b.rating)md+=`- Rating: ${'★'.repeat(b.rating)}${'☆'.repeat(5-b.rating)}\n`;
+        if(b.notes)md+=`- Notes: ${b.notes}\n`;
+        md+='\n';
+      });
+    });
+    if(!books.length)md+=`_No books logged yet._\n`;
+    return md;
+  },
+
+  /* ── PUSHERS ── */
   async pushDaily(d){
-    const c=this.cfg();
-    if(!c.enabled||!c.apiKey){showToast('Set up Obsidian sync in Settings first');return false;}
+    if(!this.guard())return false;
     const ds=d||today();
     try{
       await this.write('01 Journals/'+ds+'.md',this.buildDailyMd(ds));
       DB.set('obsidian_last_sync',new Date().toISOString());
-      showToast('✓ Daily log pushed to Obsidian!');
+      showToast('✓ Daily log → 01 Journals/'+ds+'.md');
       return true;
     }catch(e){showToast('Obsidian error: '+e.message);return false;}
   },
   async pushGoals(){
-    const c=this.cfg();
-    if(!c.enabled||!c.apiKey){showToast('Set up Obsidian sync in Settings first');return false;}
+    if(!this.guard())return false;
     try{
       await this.write('03 Projects/LIFE PLANNER/(C) Goals Sync.md',this.buildGoalsMd());
       DB.set('obsidian_last_sync',new Date().toISOString());
-      showToast('✓ Goals synced to Obsidian!');
+      showToast('✓ Goals → 03 Projects/LIFE PLANNER/');
       return true;
     }catch(e){showToast('Obsidian error: '+e.message);return false;}
+  },
+  async pushHabits(){
+    if(!this.guard())return false;
+    try{
+      await this.write('03 Projects/LIFE PLANNER/(C) Habits Sync.md',this.buildHabitsMd());
+      DB.set('obsidian_last_sync',new Date().toISOString());
+      showToast('✓ Habits → 03 Projects/LIFE PLANNER/');
+      return true;
+    }catch(e){showToast('Obsidian error: '+e.message);return false;}
+  },
+  async pushWorkouts(){
+    if(!this.guard())return false;
+    try{
+      await this.write('03 Projects/100KM ULTRA WITH ZAK/(C) Workout Log.md',this.buildWorkoutsMd());
+      DB.set('obsidian_last_sync',new Date().toISOString());
+      showToast('✓ Workouts → 03 Projects/100KM ULTRA WITH ZAK/');
+      return true;
+    }catch(e){showToast('Obsidian error: '+e.message);return false;}
+  },
+  async pushFinance(){
+    if(!this.guard())return false;
+    try{
+      await this.write('03 Projects/FINANCE/(C) Finance Sync.md',this.buildFinanceMd());
+      DB.set('obsidian_last_sync',new Date().toISOString());
+      showToast('✓ Finance → 03 Projects/FINANCE/');
+      return true;
+    }catch(e){showToast('Obsidian error: '+e.message);return false;}
+  },
+  async pushReading(){
+    if(!this.guard())return false;
+    try{
+      await this.write('00 Notes/(C) Reading List.md',this.buildReadingMd());
+      DB.set('obsidian_last_sync',new Date().toISOString());
+      showToast('✓ Reading list → 00 Notes/');
+      return true;
+    }catch(e){showToast('Obsidian error: '+e.message);return false;}
+  },
+  async pushAll(){
+    if(!this.guard())return false;
+    showToast('Syncing everything to Obsidian...',3500);
+    const results=await Promise.allSettled([
+      this.pushDaily(),
+      this.pushGoals(),
+      this.pushHabits(),
+      this.pushWorkouts(),
+      this.pushFinance(),
+      this.pushReading()
+    ]);
+    const failed=results.filter(r=>r.status==='rejected').length;
+    DB.set('obsidian_last_sync',new Date().toISOString());
+    setTimeout(()=>showToast(failed?`Sync done — ${failed} error(s), check console`:'✓ All sections synced to PAPA BRAIN!'),3600);
   }
 };
 
@@ -823,7 +966,7 @@ function renderWorkouts(el){
   el.innerHTML=`
   <div class="flex items-center justify-between mb-16">
     <div><h1 class="page-title">Workouts</h1><p class="page-sub">${weekW.length} workout${weekW.length!==1?'s':''} this week</p></div>
-    <div class="flex gap-8"><button class="btn btn-primary btn-sm" onclick="addWorkout()">+ Log Workout</button><button class="btn btn-secondary btn-sm" onclick="addBodyMetric()">+ Body Metrics</button></div>
+    <div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushWorkouts()">🔗 Sync</button><button class="btn btn-primary btn-sm" onclick="addWorkout()">+ Log Workout</button><button class="btn btn-secondary btn-sm" onclick="addBodyMetric()">+ Body Metrics</button></div>
   </div>
 
   <div class="card mb-20"><div class="card-title">Weekly Volume (minutes)</div><div class="chart-container"><canvas id="weekChart"></canvas></div></div>
@@ -1017,7 +1160,7 @@ function renderHabits(el){
   el.innerHTML=`
   <div class="flex items-center justify-between mb-16">
     <div><h1 class="page-title">Habits</h1><p class="page-sub">${habits.length} habits tracked</p></div>
-    <button class="btn btn-primary btn-sm" onclick="addHabit()">+ New Habit</button>
+    <div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushHabits()">🔗 Sync</button><button class="btn btn-primary btn-sm" onclick="addHabit()">+ New Habit</button></div>
   </div>
 
   ${habits.map(h=>{
@@ -1202,7 +1345,7 @@ function renderReading(el){
   el.innerHTML=`
   <div class="flex items-center justify-between mb-16">
     <h1 class="page-title">Reading & Learning</h1>
-    <div class="flex gap-8"><button class="btn btn-primary btn-sm" onclick="addBook()">+ Add Book</button><button class="btn btn-secondary btn-sm" onclick="addSkill()">+ Add Course</button></div>
+    <div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushReading()">🔗 Sync</button><button class="btn btn-primary btn-sm" onclick="addBook()">+ Add Book</button><button class="btn btn-secondary btn-sm" onclick="addSkill()">+ Add Course</button></div>
   </div>
 
   <div class="section-title">Currently Reading</div>
@@ -1295,7 +1438,7 @@ function renderMoney(el){
   const savingsPct=finance.savingsGoal?Math.round(finance.savingsCurrent/finance.savingsGoal*100):0;
 
   el.innerHTML=`
-  <h1 class="page-title">Money</h1>
+  <div class="flex items-center justify-between mb-4"><h1 class="page-title" style="margin-bottom:0">Money</h1><button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushFinance()">🔗 Sync to Obsidian</button></div>
   <p class="page-sub">Lightweight financial tracker</p>
 
   <div class="grid grid-3 mb-20">
@@ -1466,10 +1609,17 @@ function renderSettings(el){
     </div>
     <div id="obsStatus" class="text-xs" style="min-height:16px;"></div>
     ${DB.get('obsidian_last_sync')?`<p class="text-xs color-text2 mt-8">Last synced: ${new Date(DB.get('obsidian_last_sync','')).toLocaleString()}</p>`:''}
-    <div class="section-title" style="font-size:.85rem;margin-top:16px;">Quick Push</div>
+    <div class="section-title" style="font-size:.85rem;margin-top:16px;">Push to PAPA BRAIN</div>
+    <div class="flex gap-8 flex-wrap mb-12">
+      <button class="btn btn-primary btn-sm" onclick="ObsidianAPI.pushAll()">🔗 Sync Everything</button>
+    </div>
     <div class="flex gap-8 flex-wrap">
-      <button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushDaily()">📅 Push Today's Log</button>
-      <button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushGoals()">🎯 Push Goals</button>
+      <button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushDaily()">📅 Today's Log</button>
+      <button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushGoals()">🎯 Goals</button>
+      <button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushHabits()">✅ Habits</button>
+      <button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushWorkouts()">💪 Workouts</button>
+      <button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushFinance()">💰 Finance</button>
+      <button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushReading()">📚 Reading</button>
     </div>
   </div>
 
