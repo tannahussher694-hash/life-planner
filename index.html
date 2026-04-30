@@ -162,6 +162,12 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 .chart-container{position:relative;height:220px;width:100%;}
 @media(max-width:500px){.form-row{flex-direction:column;}}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--sage);color:#fff;padding:10px 20px;border-radius:20px;font-size:.875rem;font-weight:600;z-index:9998;pointer-events:none;opacity:0;transition:opacity .4s;}
+.sync-fab{position:fixed;right:20px;bottom:calc(var(--bottombar) + 16px);width:44px;height:44px;border-radius:50%;background:var(--navy);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:200;box-shadow:0 4px 16px rgba(0,0,0,0.25);transition:background .2s,transform .1s;font-size:1.1rem;line-height:1;}
+.sync-fab:hover{background:var(--sage);}
+.sync-fab:active{transform:scale(0.92);}
+.sync-fab.spinning svg{animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+@media(min-width:769px){.sync-fab{bottom:20px;}}
 .drop-target{border:2px dashed var(--sage)!important;background:rgba(37,99,235,0.06)!important;}
 .callout-sage{background:rgba(37,99,235,0.07);border-left:3px solid var(--sage);border-radius:6px;padding:8px 12px;margin-bottom:8px;}
 .callout-gold{background:rgba(96,165,250,0.1);border-left:3px solid var(--gold);border-radius:6px;padding:8px 12px;margin-bottom:8px;}
@@ -244,6 +250,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 <div class="bottombar" id="bottombar"><div class="bottombar-inner" id="bottomNav"></div></div>
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()"><div class="modal" id="modalContent"></div></div>
 <canvas class="confetti hidden" id="confettiCanvas"></canvas>
+<button class="sync-fab" id="syncFab" onclick="forceCacheReset()" title="Force resync from cloud">
+  <svg id="syncFabIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+</button>
 
 <script>
 /* ===== ICONS (inline SVG strings) ===== */
@@ -1902,6 +1911,16 @@ function renderSettings(el){
     </div>
   </div>
 
+  <div class="card mb-20">
+    <div class="card-title">☁️ Cloud Resync</div>
+    <p class="text-sm color-text2 mb-12">Clears your local cache and pulls everything fresh from Supabase. <strong>Your data in the cloud is never touched</strong> — this just forces a clean re-download. Use this if your phone and computer are showing different data, or the app feels stuck.</p>
+    ${DB.get('last_force_sync')?`<p class="text-xs color-text2 mb-12">Last resync: ${new Date(DB.get('last_force_sync','')).toLocaleString()}</p>`:''}
+    <button class="btn btn-primary" onclick="forceCacheReset()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+      Force Resync from Cloud
+    </button>
+  </div>
+
   <div class="card" style="opacity:0.6">
     <div class="card-title">About</div>
     <p class="text-sm">Life Tracker v1.0 · Built with care · Your data, your device, your journey.</p>
@@ -2527,6 +2546,34 @@ function updateFocusDisplay(left,total){
     ring.style.strokeDashoffset=dashOffset;
   }
 }
+
+/* ===== FORCE RESYNC ===== */
+window.forceCacheReset=async function(){
+  const fab=document.getElementById('syncFab');
+  if(fab)fab.classList.add('spinning');
+  showToast('Resyncing from cloud…',3500);
+
+  // 1. Wipe all local lt_* keys from localStorage
+  const keysToRemove=[];
+  for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('lt_'))keysToRemove.push(k);}
+  keysToRemove.forEach(k=>localStorage.removeItem(k));
+
+  // 2. Wipe in-memory cache
+  Object.keys(_cache).forEach(k=>delete _cache[k]);
+
+  // 3. Pull everything fresh from Supabase — cloud data is untouched
+  try{
+    await DB.loadFromCloud();
+    DB.subscribeRealtime();
+    showToast('Synced ✓ — data refreshed from cloud',2500);
+    DB.set('last_force_sync',new Date().toISOString());
+  }catch(e){
+    showToast('Sync failed — check your connection',3000);
+    console.warn('forceCacheReset error:',e);
+  }finally{
+    if(fab)fab.classList.remove('spinning');
+  }
+};
 
 /* ===== INIT ===== */
 function init(){
