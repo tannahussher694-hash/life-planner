@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0F172A">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FFFFFF">
 <meta name="apple-mobile-web-app-title" content="Life Planner">
 <title>Life Planner</title>
 <link rel="manifest" href="manifest.json">
@@ -14,19 +14,19 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root{
---bg:#FAF3E0;--bg2:#f5edd5;--card:rgba(255,255,255,0.72);--card-border:rgba(15,23,42,0.08);
---text:#0F172A;--text2:#475569;--text3:#94A3B8;
---navy:#0F172A;--sage:#84A98C;--gold:#D4A373;--cream:#FAF3E0;--coral:#E07856;
---accent:#84A98C;--accent2:#D4A373;--danger:#E07856;
---shadow:0 4px 24px rgba(15,23,42,0.06);--shadow-lg:0 8px 40px rgba(15,23,42,0.1);
+--bg:#FFFFFF;--bg2:#F1F5F9;--card:rgba(37,99,235,0.04);--card-border:rgba(37,99,235,0.14);
+--text:#1E293B;--text2:#64748B;--text3:#CBD5E1;
+--navy:#1E3A8A;--sage:#2563EB;--gold:#60A5FA;--cream:#FFFFFF;--coral:#F97316;
+--accent:#2563EB;--accent2:#1D4ED8;--danger:#EF4444;
+--shadow:0 4px 24px rgba(0,0,0,0.08);--shadow-lg:0 8px 40px rgba(0,0,0,0.14);
 --radius:16px;--radius-sm:10px;--radius-xs:6px;
 --sidebar:260px;--bottombar:72px;
 --font:'Inter',system-ui,-apple-system,sans-serif;
 }
 .dark{
---bg:#0c1220;--bg2:#111827;--card:rgba(30,41,59,0.72);--card-border:rgba(255,255,255,0.06);
---text:#E2E8F0;--text2:#94A3B8;--text3:#64748B;
---shadow:0 4px 24px rgba(0,0,0,0.3);--shadow-lg:0 8px 40px rgba(0,0,0,0.4);
+--bg:#0F172A;--bg2:#1E293B;--card:rgba(37,99,235,0.08);--card-border:rgba(37,99,235,0.2);
+--text:#F1F5F9;--text2:#94A3B8;--text3:#475569;
+--shadow:0 4px 24px rgba(0,0,0,0.5);--shadow-lg:0 8px 40px rgba(0,0,0,0.7);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 html{font-size:16px;}
@@ -45,7 +45,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .sidebar nav{flex:1;overflow-y:auto;}
 .sidebar nav a{display:flex;align-items:center;gap:12px;padding:10px 24px;color:#94A3B8;text-decoration:none;font-size:.875rem;font-weight:500;transition:all .2s;border-left:3px solid transparent;}
 .sidebar nav a:hover{color:#E2E8F0;background:rgba(255,255,255,0.05);}
-.sidebar nav a.active{color:#fff;background:rgba(132,169,140,0.15);border-left-color:var(--sage);}
+.sidebar nav a.active{color:#fff;background:rgba(255,255,255,0.15);border-left-color:var(--gold);}
 .sidebar nav a svg{width:20px;height:20px;flex-shrink:0;}
 .main{margin-left:var(--sidebar);flex:1;padding:32px;max-width:1100px;min-height:100vh;}
 .bottombar{display:none;position:fixed;bottom:0;left:0;right:0;height:var(--bottombar);background:var(--navy);z-index:100;padding:0 8px;overflow-x:auto;}
@@ -82,14 +82,14 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 
 /* Inputs */
 input,textarea,select{font-family:var(--font);font-size:.875rem;padding:10px 14px;border:1.5px solid var(--card-border);border-radius:var(--radius-xs);background:var(--bg);color:var(--text);width:100%;transition:border-color .2s,box-shadow .2s;outline:none;}
-input:focus,textarea:focus,select:focus{border-color:var(--sage);box-shadow:0 0 0 3px rgba(132,169,140,0.15);}
+input:focus,textarea:focus,select:focus{border-color:var(--sage);box-shadow:0 0 0 3px rgba(37,99,235,0.15);}
 textarea{resize:vertical;min-height:80px;}
 select{cursor:pointer;}
 
 /* Buttons */
 .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border:none;border-radius:var(--radius-xs);font-family:var(--font);font-size:.875rem;font-weight:600;cursor:pointer;transition:all .2s;text-decoration:none;}
 .btn-primary{background:var(--sage);color:#fff;}
-.btn-primary:hover{background:#6b9474;transform:translateY(-1px);}
+.btn-primary:hover{background:#B8960C;transform:translateY(-1px);}
 .btn-secondary{background:var(--bg2);color:var(--text);border:1.5px solid var(--card-border);}
 .btn-secondary:hover{border-color:var(--sage);}
 .btn-danger{background:var(--coral);color:#fff;}
@@ -100,11 +100,11 @@ select{cursor:pointer;}
 
 /* Tags */
 .tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:600;}
-.tag-sage{background:rgba(132,169,140,0.15);color:var(--sage);}
-.tag-gold{background:rgba(212,163,115,0.15);color:var(--gold);}
-.tag-coral{background:rgba(224,120,86,0.15);color:var(--coral);}
-.tag-navy{background:rgba(15,23,42,0.1);color:var(--navy);}
-.dark .tag-navy{background:rgba(255,255,255,0.1);color:var(--text2);}
+.tag-sage{background:rgba(37,99,235,0.1);color:var(--sage);}
+.tag-gold{background:rgba(96,165,250,0.12);color:var(--gold);}
+.tag-coral{background:rgba(249,115,22,0.12);color:var(--coral);}
+.tag-navy{background:rgba(37,99,235,0.07);color:var(--text2);}
+.dark .tag-navy{background:rgba(37,99,235,0.1);color:var(--text2);}
 
 /* Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:1000;align-items:center;justify-content:center;padding:20px;}
@@ -120,7 +120,7 @@ select{cursor:pointer;}
 .empty{text-align:center;color:var(--text3);padding:32px;font-size:.9rem;line-height:1.7;}
 .progress-bar{height:8px;background:var(--bg2);border-radius:4px;overflow:hidden;}
 .progress-fill{height:100%;border-radius:4px;transition:width .6s ease;background:linear-gradient(90deg,var(--sage),var(--gold));}
-.streak-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,var(--gold),var(--coral));color:#fff;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;}
+.streak-badge{display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,var(--sage),var(--gold));color:#fff;padding:3px 10px;border-radius:20px;font-size:.7rem;font-weight:700;}
 .form-group{margin-bottom:16px;}
 .form-group label{display:block;font-size:.8rem;font-weight:600;color:var(--text2);margin-bottom:4px;}
 .form-row{display:flex;gap:12px;}
@@ -131,7 +131,7 @@ select{cursor:pointer;}
 @keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.25);}100%{transform:scale(1);}}
 .water-glass{width:36px;height:44px;border:2px solid var(--text3);border-radius:0 0 8px 8px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
 .water-glass.filled{border-color:var(--sage);}
-.water-glass .water-fill{position:absolute;bottom:0;left:0;right:0;background:rgba(132,169,140,0.5);transition:height .4s ease;}
+.water-glass .water-fill{position:absolute;bottom:0;left:0;right:0;background:rgba(37,99,235,0.35);transition:height .4s ease;}
 .water-glass.filled .water-fill{height:100%;background:var(--sage);}
 .stars{display:flex;gap:4px;}
 .stars .star{cursor:pointer;font-size:1.25rem;color:var(--text3);transition:color .15s;}
@@ -160,9 +160,9 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 .chart-container{position:relative;height:220px;width:100%;}
 @media(max-width:500px){.form-row{flex-direction:column;}}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--sage);color:#fff;padding:10px 20px;border-radius:20px;font-size:.875rem;font-weight:600;z-index:9998;pointer-events:none;opacity:0;transition:opacity .4s;}
-.drop-target{border:2px dashed var(--sage)!important;background:rgba(132,169,140,0.08)!important;}
-.callout-sage{background:rgba(132,169,140,0.12);border-left:3px solid var(--sage);border-radius:6px;padding:8px 12px;margin-bottom:8px;}
-.callout-gold{background:rgba(212,163,115,0.12);border-left:3px solid var(--gold);border-radius:6px;padding:8px 12px;margin-bottom:8px;}
+.drop-target{border:2px dashed var(--sage)!important;background:rgba(37,99,235,0.06)!important;}
+.callout-sage{background:rgba(37,99,235,0.07);border-left:3px solid var(--sage);border-radius:6px;padding:8px 12px;margin-bottom:8px;}
+.callout-gold{background:rgba(96,165,250,0.1);border-left:3px solid var(--gold);border-radius:6px;padding:8px 12px;margin-bottom:8px;}
 .callout-coral{background:rgba(224,120,86,0.12);border-left:3px solid var(--coral);border-radius:6px;padding:8px 12px;margin-bottom:8px;}
 .log-date-nav{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
 .grat-archive-date{font-size:.8rem;font-weight:700;color:var(--text2);margin:16px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--card-border);}
@@ -227,6 +227,110 @@ const DB={
   exportAll(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('lt_'))d[k]=localStorage.getItem(k);}return d;},
   importAll(d){Object.entries(d).forEach(([k,v])=>{if(k.startsWith('lt_'))localStorage.setItem(k,v);});},
   clearSection(prefix){for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k.startsWith('lt_'+prefix))localStorage.removeItem(k);}}
+};
+
+/* ===== OBSIDIAN SYNC ===== */
+const ObsidianAPI={
+  cfg(){return DB.get('obsidian_cfg',{enabled:false,apiKey:'',port:27124,autoSync:false});},
+  saveCfg(c){DB.set('obsidian_cfg',c);},
+  async req(method,path,body){
+    const c=this.cfg();
+    const res=await fetch(`https://localhost:${c.port}/vault/${path.replace(/^\/+/,'')}`,{
+      method,
+      headers:{'Authorization':'Bearer '+c.apiKey,...(body?{'Content-Type':'text/markdown'}:{})},
+      ...(body?{body}:{})
+    });
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    return res;
+  },
+  async testConn(){
+    const c=this.cfg();
+    if(!c.apiKey)return{ok:false,msg:'No API key set — paste it below first'};
+    try{
+      const res=await fetch(`https://localhost:${c.port}/`,{headers:{'Authorization':'Bearer '+c.apiKey}});
+      return res.ok?{ok:true,msg:'Connected ✓ — Obsidian is live'}:{ok:false,msg:'Error '+res.status+' — check your API key'};
+    }catch(e){return{ok:false,msg:'Cannot reach Obsidian. Make sure it\'s open with Local REST API plugin running, and you\'ve accepted the certificate at https://localhost:27124'};}
+  },
+  async write(path,content){await this.req('PUT',path,content);},
+  buildDailyMd(d){
+    const log=DB.get('daylog_'+d,{mood:5,energy:5,sleep:{hours:7,quality:3},water:0,reflection:{}});
+    const habits=DB.get('habits',[]).filter(h=>h.active!==false);
+    const checks=DB.get('habit_checks_'+d,{});
+    const grat=DB.get('gratitude_'+d,[' ',' ',' ']);
+    const learned=DB.get('learned_'+d,'');
+    const intentions=DB.get('intentions_'+d,[' ',' ',' ']);
+    const nextDay=(ds=>{const dt=new Date(ds+'T12:00:00');dt.setDate(dt.getDate()+1);return dt.toISOString().slice(0,10);})(d);
+    const tomorrowInt=DB.get('intentions_'+nextDay,[' ',' ',' ']);
+    const workouts=DB.get('workouts',[]).filter(w=>w.date===d);
+    const journals=DB.get('journal_entries',[]).filter(e=>e.date===d);
+    let md=`---\ndate: ${d}\ntags: [daily-log, life-planner]\nsource: Life Planner App\n---\n# Daily Log — ${fmtDate(d)}\n\n`;
+    md+=`## Mood & Energy\n- Mood: ${log.mood}/10\n- Energy: ${log.energy}/10\n- Sleep: ${(log.sleep||{}).hours||0}h (quality ${(log.sleep||{}).quality||0}/5)\n- Water: ${log.water||0}/8 glasses\n\n`;
+    if(habits.length){md+=`## Habits\n`;habits.forEach(h=>{md+=`- [${checks[h.id]?'x':' '}] ${h.name}\n`;});md+='\n';}
+    const g=grat.filter(v=>v&&v.trim()&&v.trim()!==' ');
+    if(g.length){md+=`## Gratitude\n`;g.forEach((v,i)=>{md+=`${i+1}. ${v}\n`;});md+='\n';}
+    if(learned&&learned.trim()){md+=`## Learned Today\n${learned}\n\n`;}
+    const r=log.reflection||{};
+    if(r.win||r.learned||r.tomorrow){
+      md+=`## End-of-Day Reflection\n`;
+      if(r.win)md+=`**Biggest Win:** ${r.win}\n\n`;
+      if(r.learned)md+=`**Learned:** ${r.learned}\n\n`;
+      if(r.tomorrow)md+=`**Tomorrow's Top 3:** ${r.tomorrow}\n\n`;
+    }
+    const tInt=tomorrowInt.filter(v=>v&&v.trim()&&v.trim()!==' ');
+    if(tInt.length){md+=`## Tomorrow's Intentions\n`;tInt.forEach((v,i)=>{md+=`${i+1}. ${v}\n`;});md+='\n';}
+    if(workouts.length){
+      md+=`## Workouts\n`;
+      workouts.forEach(w=>{
+        md+=`- **${w.type}** · ${w.duration}min · Intensity ${w.intensity}/10${w.notes?' · '+w.notes:''}\n`;
+        (w.exercises||[]).forEach(e=>{md+=`  - ${e.name}: ${e.sets}×${e.reps}${e.weight?' @ '+e.weight+'lbs':''}\n`;});
+      });
+      md+='\n';
+    }
+    if(journals.length){md+=`## Journal Entries\n`;journals.forEach(j=>{md+=`### ${j.type||'Entry'}\n${j.text||''}\n\n`;});}
+    return md;
+  },
+  buildGoalsMd(){
+    const goals=DB.get('goals_2026',[]);
+    const vision=DB.get('vision_2026','');
+    let md=`---\ntags: [goals, life-planner, 2026]\nlast-synced: ${today()}\nsource: Life Planner App\n---\n# 2026 Goals (Life Planner Sync)\n\n`;
+    if(vision)md+=`## Vision 2026\n${vision}\n\n`;
+    const cats=[...new Set(goals.map(g=>g.category))];
+    cats.forEach(cat=>{
+      md+=`## ${cat}\n`;
+      goals.filter(g=>g.category===cat).forEach(g=>{
+        const done=(g.milestones||[]).filter(m=>m.done).length;
+        const total=(g.milestones||[]).length;
+        const pct=total?Math.round(done/total*100):0;
+        md+=`### ${g.title}\n**Status:** ${g.status||'On Track'} · **Progress:** ${pct}%\n`;
+        if(g.why)md+=`**Why:** ${g.why}\n`;
+        if(g.targetDate)md+=`**Target:** ${g.targetDate}\n`;
+        if(g.milestones&&g.milestones.length){md+='\n**Milestones:**\n';g.milestones.forEach(m=>{md+=`- [${m.done?'x':' '}] ${m.text}\n`;});}
+        md+='\n';
+      });
+    });
+    return md;
+  },
+  async pushDaily(d){
+    const c=this.cfg();
+    if(!c.enabled||!c.apiKey){showToast('Set up Obsidian sync in Settings first');return false;}
+    const ds=d||today();
+    try{
+      await this.write('01 Journals/'+ds+'.md',this.buildDailyMd(ds));
+      DB.set('obsidian_last_sync',new Date().toISOString());
+      showToast('✓ Daily log pushed to Obsidian!');
+      return true;
+    }catch(e){showToast('Obsidian error: '+e.message);return false;}
+  },
+  async pushGoals(){
+    const c=this.cfg();
+    if(!c.enabled||!c.apiKey){showToast('Set up Obsidian sync in Settings first');return false;}
+    try{
+      await this.write('03 Projects/LIFE PLANNER/(C) Goals Sync.md',this.buildGoalsMd());
+      DB.set('obsidian_last_sync',new Date().toISOString());
+      showToast('✓ Goals synced to Obsidian!');
+      return true;
+    }catch(e){showToast('Obsidian error: '+e.message);return false;}
+  }
 };
 
 /* ===== QUOTES ===== */
@@ -573,7 +677,7 @@ function renderDailyLog(el){
     <div class="form-group"><label>Tomorrow's top 3</label><textarea rows="2" oninput="saveDayLogNested('reflection','tomorrow',this.value)">${(log.reflection.tomorrow||'').replace(/</g,'&lt;')}</textarea></div>
   </div>
 
-  <div class="save-log-bar"><button class="btn btn-primary" onclick="showToast('Log saved ✓',2500)">💾 Save Log</button></div>
+  <div class="save-log-bar" style="display:flex;gap:8px;justify-content:flex-end;"><button class="btn btn-secondary" onclick="ObsidianAPI.pushDaily()">🔗 Push to Obsidian</button><button class="btn btn-primary" onclick="showToast('Log saved ✓',2500)">💾 Save Log</button></div>
 
   <div class="section-title">Past Daily Logs</div>
   ${(()=>{
@@ -810,7 +914,7 @@ function renderGoals(el){
   el.innerHTML=`
   <div class="flex items-center justify-between mb-16">
     <div><h1 class="page-title">2026 Goals</h1><p class="page-sub">${goals.length} goals set for the year</p></div>
-    <button class="btn btn-primary btn-sm" onclick="addGoal()">+ New Goal</button>
+    <div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushGoals()">🔗 Sync to Obsidian</button><button class="btn btn-primary btn-sm" onclick="addGoal()">+ New Goal</button></div>
   </div>
 
   <div class="card mb-20">
@@ -1330,6 +1434,45 @@ function renderSettings(el){
     </div>
   </div>
 
+  <div class="card mb-20">
+    <div class="card-title">🔗 Obsidian Sync</div>
+    <p class="text-sm color-text2 mb-12">Connect to your <strong>PAPA BRAIN</strong> vault using the <a href="https://github.com/coddingtonbear/obsidian-local-rest-api" target="_blank" style="color:var(--sage)">Obsidian Local REST API</a> plugin. Obsidian must be open on the same device.</p>
+    <div class="callout-gold mb-16">
+      <p class="text-xs font-semi mb-6">⚙️ One-time setup:</p>
+      <ol class="text-xs color-text2" style="padding-left:16px;line-height:2;">
+        <li>Install <strong>Local REST API</strong> in Obsidian → Settings → Community Plugins</li>
+        <li>Enable the plugin and copy your <strong>API Key</strong> from its settings panel</li>
+        <li>In your browser, visit <a href="https://localhost:27124" target="_blank" style="color:var(--sage)">https://localhost:27124</a> and click <em>Advanced → Proceed</em> to accept the self-signed certificate</li>
+        <li>Paste the key below, save, and hit Test Connection</li>
+      </ol>
+    </div>
+    <div class="form-group">
+      <label>API Key</label>
+      <input id="obsApiKey" type="password" placeholder="Paste your Local REST API key here..." value="${(DB.get('obsidian_cfg',{}).apiKey||'').replace(/"/g,'&quot;')}">
+    </div>
+    <div class="form-row mb-12">
+      <div class="form-group">
+        <label>Port (default 27124)</label>
+        <input id="obsPort" type="number" value="${DB.get('obsidian_cfg',{}).port||27124}">
+      </div>
+      <div class="form-group flex items-center gap-8" style="padding-top:24px;">
+        <input type="checkbox" id="obsEnabled" style="width:auto;flex-shrink:0;" ${DB.get('obsidian_cfg',{}).enabled?'checked':''}>
+        <label for="obsEnabled" style="margin-bottom:0;cursor:pointer;">Enable sync</label>
+      </div>
+    </div>
+    <div class="flex gap-8 mb-12 flex-wrap">
+      <button class="btn btn-primary btn-sm" onclick="obsidianSave()">Save Config</button>
+      <button class="btn btn-secondary btn-sm" onclick="obsidianTest()">🔌 Test Connection</button>
+    </div>
+    <div id="obsStatus" class="text-xs" style="min-height:16px;"></div>
+    ${DB.get('obsidian_last_sync')?`<p class="text-xs color-text2 mt-8">Last synced: ${new Date(DB.get('obsidian_last_sync','')).toLocaleString()}</p>`:''}
+    <div class="section-title" style="font-size:.85rem;margin-top:16px;">Quick Push</div>
+    <div class="flex gap-8 flex-wrap">
+      <button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushDaily()">📅 Push Today's Log</button>
+      <button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushGoals()">🎯 Push Goals</button>
+    </div>
+  </div>
+
   <div class="card" style="opacity:0.6">
     <div class="card-title">About</div>
     <p class="text-sm">Life Tracker v1.0 · Built with care · Your data, your device, your journey.</p>
@@ -1360,6 +1503,34 @@ window.importData=function(input){
 };
 
 window.resetSection=function(s){if(confirm(`Are you sure you want to reset "${s.replace(/_/g,' ')}"? This cannot be undone.`)){DB.del(s);alert('Section reset.');navigate('settings');}};
+
+window.obsidianSave=function(){
+  const cfg={
+    enabled:document.getElementById('obsEnabled').checked,
+    apiKey:document.getElementById('obsApiKey').value.trim(),
+    port:+document.getElementById('obsPort').value||27124
+  };
+  ObsidianAPI.saveCfg(cfg);
+  showToast('Obsidian config saved ✓');
+  navigate('settings');
+};
+
+window.obsidianTest=async function(){
+  const status=document.getElementById('obsStatus');
+  if(status){status.textContent='Testing connection...';status.style.color='var(--text2)';}
+  // Save current values first so testConn uses them
+  const tmpCfg={
+    enabled:document.getElementById('obsEnabled').checked,
+    apiKey:document.getElementById('obsApiKey').value.trim(),
+    port:+document.getElementById('obsPort').value||27124
+  };
+  ObsidianAPI.saveCfg(tmpCfg);
+  const result=await ObsidianAPI.testConn();
+  if(status){
+    status.textContent=result.msg;
+    status.style.color=result.ok?'var(--sage)':'var(--coral)';
+  }
+};
 
 /* ===== INIT ===== */
 function init(){
