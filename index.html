@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#FFFFFF">
@@ -82,7 +82,8 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 .label{font-size:.75rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;}
 
 /* Inputs */
-input,textarea,select{font-family:var(--font);font-size:.875rem;padding:10px 14px;border:1.5px solid var(--card-border);border-radius:var(--radius-xs);background:var(--bg);color:var(--text);width:100%;transition:border-color .2s,box-shadow .2s;outline:none;}
+input,textarea,select{font-family:var(--font);font-size:16px;padding:10px 14px;border:1.5px solid var(--card-border);border-radius:var(--radius-xs);background:var(--bg);color:var(--text);width:100%;transition:border-color .2s,box-shadow .2s;outline:none;}
+@media(min-width:769px){input,textarea,select{font-size:.875rem;}}
 input:focus,textarea:focus,select:focus{border-color:var(--sage);box-shadow:0 0 0 3px rgba(37,99,235,0.15);}
 textarea{resize:vertical;min-height:80px;}
 select{cursor:pointer;}
