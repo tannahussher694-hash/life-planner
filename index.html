@@ -174,6 +174,62 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;heigh
 @media(max-width:768px){.goals-glance{grid-template-columns:1fr;}}
 .drag-handle{cursor:grab;opacity:0.4;font-size:1rem;flex-shrink:0;}
 .drag-handle:active{cursor:grabbing;}
+
+/* ===== COUNTDOWN CARDS ===== */
+.countdown-card{background:linear-gradient(135deg,var(--navy),#1E3A5F);color:#E2E8F0;border:none;padding:20px 24px;border-radius:var(--radius);display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.countdown-num{font-size:2.5rem;font-weight:800;letter-spacing:-0.04em;line-height:1;color:#fff;}
+.countdown-label{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#94A3B8;margin-top:2px;}
+.countdown-title{font-size:.95rem;font-weight:700;color:#E2E8F0;margin-bottom:2px;}
+.countdown-date{font-size:.75rem;color:#64748B;}
+
+/* ===== FOCUS TIMER ===== */
+.focus-wrap{display:flex;flex-direction:column;align-items:center;gap:24px;padding:24px 0;}
+.focus-ring{position:relative;width:220px;height:220px;}
+.focus-ring svg{width:220px;height:220px;transform:rotate(-90deg);}
+.focus-ring circle{fill:none;stroke-width:10;cx:110;cy:110;r:98;}
+.focus-track{stroke:var(--bg2);}
+.focus-progress{stroke:var(--sage);stroke-dasharray:616;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear;stroke-linecap:round;}
+.focus-time{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.focus-time span{font-size:2.8rem;font-weight:800;letter-spacing:-0.04em;line-height:1;}
+.focus-time small{font-size:.7rem;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-top:4px;}
+.focus-modes{display:flex;gap:8px;}
+.focus-modes button{padding:6px 14px;border:1.5px solid var(--card-border);border-radius:20px;background:transparent;font-family:var(--font);font-size:.8rem;font-weight:600;color:var(--text2);cursor:pointer;transition:all .2s;}
+.focus-modes button.active{background:var(--sage);color:#fff;border-color:var(--sage);}
+.focus-log{max-height:200px;overflow-y:auto;}
+
+/* ===== NORTHSTAR PIPELINE ===== */
+.pipeline-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+@media(max-width:900px){.pipeline-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:500px){.pipeline-grid{grid-template-columns:1fr;}}
+.pipeline-col-header{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;padding:6px 10px;border-radius:6px;margin-bottom:8px;text-align:center;}
+.pipeline-card{background:var(--bg);border:1.5px solid var(--card-border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:8px;cursor:pointer;transition:border-color .2s;}
+.pipeline-card:hover{border-color:var(--sage);}
+.ns-stat{display:flex;flex-direction:column;align-items:center;gap:2px;}
+.revenue-bar{height:12px;background:var(--bg2);border-radius:6px;overflow:hidden;margin-top:4px;}
+.revenue-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--sage),var(--gold));transition:width .6s ease;}
+
+/* ===== SOBRIETY / CLEAN STREAK ===== */
+.sober-counter{font-size:5rem;font-weight:800;line-height:1;letter-spacing:-0.04em;background:linear-gradient(135deg,var(--sage),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;}
+.sober-unit{font-size:1rem;font-weight:700;color:var(--text2);text-align:center;margin-top:4px;text-transform:uppercase;letter-spacing:.06em;}
+.milestone-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-size:.75rem;font-weight:700;background:var(--bg2);color:var(--text2);}
+.milestone-badge.achieved{background:linear-gradient(135deg,var(--sage),var(--gold));color:#fff;}
+
+/* ===== RELATIONSHIPS ===== */
+.rel-card{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--card);border:1px solid var(--card-border);border-radius:var(--radius-sm);margin-bottom:8px;transition:border-color .2s;}
+.rel-card:hover{border-color:var(--sage);}
+.rel-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
+.rel-dot.green{background:#22C55E;}
+.rel-dot.yellow{background:#EAB308;}
+.rel-dot.red{background:var(--coral);}
+
+/* ===== ULTRA TRAINING ===== */
+.phase-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin:12px 0;}
+.phase-block{padding:8px 4px;border-radius:6px;text-align:center;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;opacity:.4;transition:opacity .2s;}
+.phase-block.active{opacity:1;}
+.phase-base{background:rgba(37,99,235,0.15);color:var(--sage);}
+.phase-build{background:rgba(96,165,250,0.15);color:var(--gold);}
+.phase-peak{background:rgba(249,115,22,0.15);color:var(--coral);}
+.phase-taper{background:rgba(167,139,250,0.15);color:#A78BFA;}
 </style>
 </head>
 <body>
@@ -201,7 +257,12 @@ const icons={
   reading:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>',
   money:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>',
   settings:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>',
-  gratitude:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>'
+  gratitude:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',
+  ultra:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M13.5 8.5L16 13l-4 2-2 4"/><path d="M10 10.5L8 14l3 2"/></svg>',
+  northstar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+  focus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  sobriety:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+  relationships:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>'
 };
 
 /* ===== NAVIGATION ===== */
@@ -216,6 +277,11 @@ const sections=[
   {id:'gratitude',label:'Gratitude',icon:'gratitude'},
   {id:'reading',label:'Reading',icon:'reading'},
   {id:'money',label:'Money',icon:'money'},
+  {id:'ultra',label:'100km Ultra',icon:'ultra'},
+  {id:'northstar',label:'NORTHSTAR',icon:'northstar'},
+  {id:'sobriety',label:'Clean Streak',icon:'sobriety'},
+  {id:'relationships',label:'People',icon:'relationships'},
+  {id:'focus',label:'Focus',icon:'focus'},
   {id:'settings',label:'Settings',icon:'settings'},
 ];
 
@@ -654,6 +720,8 @@ const cats=['Work','Health','Family','Learning','Rest','Creative','Social'];
 const catColors={Work:'#6366F1',Health:'#84A98C',Family:'#D4A373',Learning:'#0EA5E9',Rest:'#A78BFA',Creative:'#E07856',Social:'#EC4899'};
 const goalCats=['Career','Health','Finance','Relationships','Learning','Personal Growth','Adventure'];
 const exerciseLib={Push:['Bench Press','OHP','Dips','Pushups'],Pull:['Barbell Rows','Pullups','Deadlift','Cable Rows'],Legs:['Squat','RDL','Lunges','Leg Press'],Core:['Plank','Hanging Leg Raise','Cable Crunch'],Cardio:['Run','Bike','Row','Jump Rope']};
+const workoutTypes=['Run','Dance','Strength','Cardio','Yoga','Sport','Mobility','Walk','Swim'];
+const distanceTypes=['Run','Walk','Swim'];
 const defaultHabits=['Meditate 10 min','Read 20 pages','No phone first hour','Exercise','Journal','Cold shower','Lights out by 10:30pm','No alcohol','No social media before noon'];
 
 /* ===== RENDERING ===== */
@@ -670,7 +738,7 @@ function navigate(id){
   main.innerHTML='';
   main.className='main fade-in';
   try{
-    const renderers={today:renderToday,dailylog:renderDailyLog,calendar:renderCalendar,workouts:renderWorkouts,goals:renderGoals,habits:renderHabits,journal:renderJournal,gratitude:renderGratitude,reading:renderReading,money:renderMoney,settings:renderSettings};
+    const renderers={today:renderToday,dailylog:renderDailyLog,calendar:renderCalendar,workouts:renderWorkouts,goals:renderGoals,habits:renderHabits,journal:renderJournal,gratitude:renderGratitude,reading:renderReading,money:renderMoney,ultra:renderUltra,northstar:renderNorthstar,sobriety:renderSobriety,relationships:renderRelationships,focus:renderFocus,settings:renderSettings};
     if(renderers[id])renderers[id](main);
   }catch(err){
     main.innerHTML=`<div style="padding:32px;"><h2 style="color:#E07856;margin-bottom:12px;">⚠️ Render Error in "${id}"</h2><pre style="background:#f5edd5;padding:16px;border-radius:8px;font-size:.8rem;white-space:pre-wrap;word-break:break-all;">${err.stack||err.message||String(err)}</pre><p style="margin-top:12px;font-size:.85rem;color:#475569;">Send this to Claude to fix it.</p></div>`;
@@ -759,10 +827,50 @@ function renderToday(el){
   const todayHabits=habitsData.filter(h=>h.active!==false);
   const featuredGoals=goals.slice(0,4);
 
+  // Countdowns
+  const idlDate=new Date('2026-06-20T12:00:00');
+  const ultraDate=new Date('2026-09-11T12:00:00');
+  const nowMs=new Date();
+  const idlDays=Math.max(0,Math.ceil((idlDate-nowMs)/86400000));
+  const ultraDays=Math.max(0,Math.ceil((ultraDate-nowMs)/86400000));
+
+  // Weekly km (runs this week)
+  const weekStartDate=new Date(d);weekStartDate.setDate(d.getDate()-d.getDay());
+  const weekStartStr=weekStartDate.toISOString().slice(0,10);
+  const weekKm=workouts.filter(w=>w.date>=weekStartStr&&(w.type==='Run'||w.type==='Walk')).reduce((a,w)=>a+(w.distance||0),0);
+
+  // NORTHSTAR pipeline quick stat
+  const nsLeads=DB.get('ns_leads',[]);
+  const nsClosed=nsLeads.filter(l=>l.stage==='Closed').length;
+  const nsMRR=nsLeads.filter(l=>l.stage==='Closed').reduce((a,l)=>a+(l.value||0),0);
+
   el.innerHTML=`
   <div class="mb-8"><span class="text-sm color-text2">${fmtDate(today())}</span></div>
   <h1 class="page-title mb-8">Good ${d.getHours()<12?'morning':d.getHours()<17?'afternoon':'evening'}, ${name}</h1>
   <p class="page-sub">Day ${doy} of ${d.getFullYear()} — ${left} days left to make it count</p>
+
+  <div class="grid grid-2 mb-16">
+    <div class="countdown-card clickable" onclick="navigate('workouts')">
+      <div>
+        <div class="countdown-title">🕺 IDL with Bloodline</div>
+        <div class="countdown-date">20 June 2026</div>
+      </div>
+      <div style="text-align:right">
+        <div class="countdown-num">${idlDays}</div>
+        <div class="countdown-label">days away</div>
+      </div>
+    </div>
+    <div class="countdown-card clickable" onclick="navigate('ultra')">
+      <div>
+        <div class="countdown-title">🏃 100km Ultra with Zak</div>
+        <div class="countdown-date">11 September 2026</div>
+      </div>
+      <div style="text-align:right">
+        <div class="countdown-num">${ultraDays}</div>
+        <div class="countdown-label">days away</div>
+      </div>
+    </div>
+  </div>
 
   <div class="card mb-20" style="background:linear-gradient(135deg,var(--navy),#1E293B);color:#E2E8F0;border:none;">
     <p style="font-size:.85rem;line-height:1.8;font-style:italic;opacity:0.9;">"${quote}"</p>
@@ -774,10 +882,10 @@ function renderToday(el){
   </div>
 
   <div class="grid grid-4 mb-20">
-    <div class="card card-sm text-center"><div class="stat-num color-sage">${maxStreak}</div><div class="stat-label">Best Streak</div></div>
-    <div class="card card-sm text-center"><div class="stat-num color-gold">${weekWorkouts}</div><div class="stat-label">Workouts This Week</div></div>
-    <div class="card card-sm text-center"><div class="stat-num" style="color:var(--accent)">${onTrack}/${goals.length||0}</div><div class="stat-label">Goals On Track</div></div>
-    <div class="card card-sm text-center"><div class="stat-num color-coral">${avgMood}</div><div class="stat-label">Avg Mood</div></div>
+    <div class="card card-sm text-center clickable" onclick="navigate('habits')"><div class="stat-num color-sage">${maxStreak}</div><div class="stat-label">Best Streak</div></div>
+    <div class="card card-sm text-center clickable" onclick="navigate('workouts')"><div class="stat-num color-gold">${weekWorkouts}</div><div class="stat-label">Workouts This Week</div></div>
+    <div class="card card-sm text-center clickable" onclick="navigate('ultra')"><div class="stat-num" style="color:var(--accent)">${weekKm.toFixed(1)}</div><div class="stat-label">km Run This Week</div></div>
+    <div class="card card-sm text-center clickable" onclick="navigate('northstar')"><div class="stat-num color-coral">$${nsMRR.toLocaleString()}</div><div class="stat-label">NORTHSTAR MRR</div></div>
   </div>
 
   ${featuredGoals.length?`
@@ -815,6 +923,10 @@ function renderToday(el){
 
 window.saveGratitude=function(i,v){const g=DB.get('gratitude_'+today(),[' ',' ',' ']);g[i]=v;DB.set('gratitude_'+today(),g);};
 window.saveIntention=function(i,v){const t=DB.get('intentions_'+today(),[' ',' ',' ']);t[i]=v;DB.set('intentions_'+today(),t);};
+window.saveTomorrowIntention=function(i,v){const t=DB.get('intentions_'+tomorrow(),[' ',' ',' ']);t[i]=v;DB.set('intentions_'+tomorrow(),t);};
+window.toggleYesterdayIntent=function(i){
+  const checks=DB.get('intention_checks_'+today(),{});checks[i]=!checks[i];DB.set('intention_checks_'+today(),checks);navigate('today');
+};
 window.toggleTodayHabit=function(id){
   const checks=DB.get('habit_checks_'+today(),{});checks[id]=!checks[id];DB.set('habit_checks_'+today(),checks);
   updateHabitStreaks();
@@ -1039,14 +1151,22 @@ function renderWorkouts(el){
   const d=new Date();const weekStart=new Date(d);weekStart.setDate(d.getDate()-d.getDay());
   const ws=weekStart.toISOString().slice(0,10);
   const weekW=workouts.filter(w=>w.date>=ws);
+  const weekKmTotal=weekW.filter(w=>distanceTypes.includes(w.type)).reduce((a,w)=>a+(w.distance||0),0);
+  const totalKmLogged=workouts.filter(w=>distanceTypes.includes(w.type)).reduce((a,w)=>a+(w.distance||0),0);
 
   const dayLabels=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const weekVolume=dayLabels.map((_,i)=>{const dd=new Date(weekStart);dd.setDate(weekStart.getDate()+i);const ds=dd.toISOString().slice(0,10);return workouts.filter(w=>w.date===ds).reduce((a,w)=>a+(w.duration||0),0);});
 
   el.innerHTML=`
   <div class="flex items-center justify-between mb-16">
-    <div><h1 class="page-title">Workouts</h1><p class="page-sub">${weekW.length} workout${weekW.length!==1?'s':''} this week</p></div>
+    <div><h1 class="page-title">Workouts</h1><p class="page-sub">${weekW.length} workout${weekW.length!==1?'s':''} this week · ${weekKmTotal.toFixed(1)} km run</p></div>
     <div class="flex gap-8"><button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushWorkouts()">🔗 Sync</button><button class="btn btn-primary btn-sm" onclick="addWorkout()">+ Log Workout</button><button class="btn btn-secondary btn-sm" onclick="addBodyMetric()">+ Body Metrics</button></div>
+  </div>
+
+  <div class="grid grid-3 mb-20">
+    <div class="card card-sm text-center"><div class="stat-num color-sage">${weekW.length}</div><div class="stat-label">Workouts This Week</div></div>
+    <div class="card card-sm text-center"><div class="stat-num color-gold">${weekKmTotal.toFixed(1)}</div><div class="stat-label">km This Week</div></div>
+    <div class="card card-sm text-center"><div class="stat-num" style="color:var(--accent)">${totalKmLogged.toFixed(1)}</div><div class="stat-label">Total km Logged</div></div>
   </div>
 
   <div class="card mb-20"><div class="card-title">Weekly Volume (minutes)</div><div class="chart-container"><canvas id="weekChart"></canvas></div></div>
@@ -1056,7 +1176,7 @@ function renderWorkouts(el){
     <div class="card card-sm mb-8 flex items-center justify-between">
       <div>
         <span class="font-semi">${w.type}</span>
-        <span class="text-xs color-text2 ml-8">${shortDate(w.date)} · ${w.duration}min · Intensity ${w.intensity}/10</span>
+        <span class="text-xs color-text2 ml-8">${shortDate(w.date)} · ${w.duration}min${w.distance?' · '+w.distance+'km':''} · Intensity ${w.intensity}/10</span>
         ${w.notes?`<div class="text-xs color-text2 mt-4">${w.notes}</div>`:''}
         ${w.exercises?`<div class="text-xs color-text2 mt-4">${w.exercises.map(e=>`${e.name}: ${e.sets}×${e.reps}${e.weight?' @'+e.weight+'lbs':''}`).join(' · ')}</div>`:''}
       </div>
@@ -1078,16 +1198,17 @@ function renderWorkouts(el){
 }
 
 window.addWorkout=function(){
-  const types=['Strength','Cardio','Yoga','Sport','Mobility'];
   openModal(`<h2>Log Workout</h2>
-    <div class="form-row"><div class="form-group"><label>Type</label><select id="wType">${types.map(t=>`<option>${t}</option>`).join('')}</select></div>
+    <div class="form-row"><div class="form-group"><label>Type</label><select id="wType" onchange="toggleDistanceField(this.value)">${workoutTypes.map(t=>`<option>${t}</option>`).join('')}</select></div>
     <div class="form-group"><label>Date</label><input type="date" id="wDate" value="${today()}"></div></div>
     <div class="form-row"><div class="form-group"><label>Duration (min)</label><input type="number" id="wDur" value="30"></div>
     <div class="form-group"><label>Intensity (1-10)</label><input type="number" id="wInt" min="1" max="10" value="7"></div></div>
+    <div class="form-group" id="distanceGroup" style="display:none"><label>Distance (km)</label><input type="number" id="wDist" step="0.01" min="0" placeholder="e.g. 10.5"></div>
     <div class="form-group"><label>Notes</label><textarea id="wNotes" rows="2"></textarea></div>
     <div id="exerciseSection"></div>
     <button class="btn btn-secondary btn-sm mb-16" onclick="addExerciseRow()">+ Add Exercise</button>
     <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveWorkout()">Save</button></div>`);
+  toggleDistanceField(workoutTypes[0]);
 };
 
 window.addExerciseRow=function(){
@@ -1101,13 +1222,20 @@ window.addExerciseRow=function(){
   sec.appendChild(div);
 };
 
+window.toggleDistanceField=function(type){
+  const dg=document.getElementById('distanceGroup');
+  if(dg)dg.style.display=distanceTypes.includes(type)?'block':'none';
+};
 window.saveWorkout=function(){
   const w=DB.get('workouts',[]);
   const exercises=[];
+  const type=document.getElementById('wType').value;
+  const distEl=document.getElementById('wDist');
+  const distance=distEl&&distEl.value?+distEl.value:null;
   document.querySelectorAll('#exerciseSection .form-row').forEach(r=>{
     exercises.push({name:r.querySelector('.ex-name').value,sets:+r.querySelector('.ex-sets').value,reps:+r.querySelector('.ex-reps').value,weight:+r.querySelector('.ex-weight').value||0});
   });
-  w.push({id:Date.now().toString(36),type:document.getElementById('wType').value,date:document.getElementById('wDate').value,duration:+document.getElementById('wDur').value,intensity:+document.getElementById('wInt').value,notes:document.getElementById('wNotes').value,exercises:exercises.length?exercises:null});
+  w.push({id:Date.now().toString(36),type,date:document.getElementById('wDate').value,duration:+document.getElementById('wDur').value,intensity:+document.getElementById('wInt').value,notes:document.getElementById('wNotes').value,exercises:exercises.length?exercises:null,distance});
   DB.set('workouts',w);closeModal();navigate('workouts');
 };
 
@@ -1164,7 +1292,8 @@ function renderGoals(el){
         </div>
         ${g.why?`<p class="text-xs color-text2 mb-8">Why: ${g.why}</p>`:''}
         <div class="progress-bar mb-8"><div class="progress-fill" style="width:${pct}%"></div></div>
-        <div class="text-xs color-text2">${done}/${total} milestones · ${pct}% complete${g.targetDate?' · Due '+shortDate(g.targetDate):''}</div>
+        <div class="text-xs color-text2 mb-10">${done}/${total} milestones · ${pct}% complete${g.targetDate?' · Due '+shortDate(g.targetDate):''}</div>
+        ${(g.milestones||[]).length?`<div class="flex flex-wrap gap-8">${(g.milestones||[]).map((m,i)=>`<div class="flex items-center gap-6" style="background:var(--bg2);border-radius:20px;padding:3px 10px 3px 6px;"><button class="check-btn ${m.done?'checked':''}" style="width:20px;height:20px;" onclick="toggleMilestoneInline('${g.id}',${i})"></button><span class="text-xs ${m.done?'color-text2':'font-semi'}" style="${m.done?'text-decoration:line-through;opacity:0.5':''}">${m.text}</span></div>`).join('')}</div>`:''}
       </div>`;}).join('')}`;
   }).join('')}
 
@@ -1219,6 +1348,12 @@ window.toggleMilestone=function(gid,mi){
 };
 
 window.deleteGoal=function(id){if(!confirm('Delete this goal?'))return;DB.set('goals_2026',DB.get('goals_2026',[]).filter(g=>g.id!==id));navigate('goals');};
+window.toggleMilestoneInline=function(gid,mi){
+  const goals=DB.get('goals_2026',[]);const g=goals.find(g=>g.id===gid);
+  if(g&&g.milestones[mi]){g.milestones[mi].done=!g.milestones[mi].done;DB.set('goals_2026',goals);
+  const allDone=g.milestones.every(m=>m.done);if(allDone&&g.milestones.length>0)fireConfetti();
+  navigate('goals');}
+};
 
 /* ===== HABITS ===== */
 function renderHabits(el){
@@ -1293,14 +1428,13 @@ window.deleteHabit=function(id){if(!confirm('Delete this habit?'))return;DB.set(
 /* ===== JOURNAL ===== */
 function renderJournal(el){
   const entries=DB.get('journal_entries',[]);
-  const d=new Date();const isSunday=d.getDay()===0;
 
   el.innerHTML=`
   <div class="flex items-center justify-between mb-16">
     <h1 class="page-title">Journal & Gratitude</h1>
     <div class="flex gap-8">
       <button class="btn btn-primary btn-sm" onclick="newJournalEntry()">+ New Entry</button>
-      ${isSunday?`<button class="btn btn-secondary btn-sm" onclick="weeklyReview()">📋 Weekly Review</button>`:''}
+      <button class="btn btn-secondary btn-sm" onclick="weeklyReview()">📋 Weekly Review</button>
     </div>
   </div>
 
@@ -1517,9 +1651,40 @@ function renderMoney(el){
   const monthExpenses=finance.expenses.filter(i=>i.month===thisMonth).reduce((a,i)=>a+i.amount,0);
   const savingsPct=finance.savingsGoal?Math.round(finance.savingsCurrent/finance.savingsGoal*100):0;
 
+  // Calile shifts
+  const shifts=DB.get('calile_shifts',[]);
+  const CALILE_RATE=32;
+  const thisMonthStr=new Date().toISOString().slice(0,7);
+  const monthShiftIncome=shifts.filter(s=>s.date&&s.date.startsWith(thisMonthStr)).reduce((a,s)=>a+(s.hours*CALILE_RATE),0);
+  const totalShiftHours=shifts.reduce((a,s)=>a+(s.hours||0),0);
+
+  // Runway calculator
+  const avgWeeklyExpenses=finance.expenses.length>0?(finance.expenses.reduce((a,i)=>a+i.amount,0)/Math.max(1,new Set(finance.expenses.map(i=>i.month)).size))/4.33:0;
+  const runwayWeeks=avgWeeklyExpenses>0?Math.floor(finance.savingsCurrent/avgWeeklyExpenses):null;
+
   el.innerHTML=`
   <div class="flex items-center justify-between mb-4"><h1 class="page-title" style="margin-bottom:0">Money</h1><button class="btn btn-secondary btn-sm" onclick="ObsidianAPI.pushFinance()">🔗 Sync to Obsidian</button></div>
   <p class="page-sub">Lightweight financial tracker</p>
+
+  ${runwayWeeks!==null?`<div class="card mb-16" style="border-left:3px solid ${runwayWeeks<4?'var(--coral)':runwayWeeks<8?'var(--gold)':'var(--sage)'};">
+    <div class="flex items-center justify-between">
+      <div><div class="text-xs font-semi color-text2 mb-4">💰 RUNWAY CALCULATOR</div><div style="font-size:1.8rem;font-weight:800;color:${runwayWeeks<4?'var(--coral)':runwayWeeks<8?'var(--gold)':'var(--sage)'}">${runwayWeeks} weeks</div><div class="text-xs color-text2">at current spend rate (~$${Math.round(avgWeeklyExpenses)}/wk)</div></div>
+      <div style="text-align:right"><div class="text-xs color-text2 mb-4">savings</div><div class="font-bold">$${(finance.savingsCurrent||0).toLocaleString()}</div></div>
+    </div>
+  </div>`:''}
+
+  <div class="card mb-16">
+    <div class="flex items-center justify-between mb-12">
+      <div class="card-title" style="margin-bottom:0">☕ The Calile Shifts</div>
+      <button class="btn btn-primary btn-sm" onclick="addShift()">+ Log Shift</button>
+    </div>
+    <div class="grid grid-3 mb-12">
+      <div class="text-center"><div class="font-bold color-sage">$${monthShiftIncome.toLocaleString()}</div><div class="text-xs color-text2">earned this month</div></div>
+      <div class="text-center"><div class="font-bold color-gold">${shifts.filter(s=>s.date&&s.date.startsWith(thisMonthStr)).reduce((a,s)=>a+(s.hours||0),0).toFixed(1)}h</div><div class="text-xs color-text2">hours this month</div></div>
+      <div class="text-center"><div class="font-bold">${totalShiftHours.toFixed(1)}h</div><div class="text-xs color-text2">total hours worked</div></div>
+    </div>
+    ${shifts.length?`<div style="max-height:180px;overflow-y:auto;">${shifts.slice().reverse().slice(0,8).map(s=>`<div class="flex items-center justify-between mb-6"><span class="text-sm">${shortDate(s.date)} · ${s.hours}h${s.notes?' — '+s.notes:''}</span><div class="flex items-center gap-8"><span class="font-semi color-sage text-sm">$${(s.hours*CALILE_RATE).toFixed(0)}</span><button class="btn-ghost text-xs" onclick="deleteShift('${s.id}')">✕</button></div></div>`).join('')}</div>`:'<div class="text-xs color-text2">No shifts logged yet — start from 28 April 2026.</div>'}
+  </div>
 
   <div class="grid grid-3 mb-20">
     <div class="card card-sm text-center"><div class="stat-num color-sage">$${monthIncome.toLocaleString()}</div><div class="stat-label">Income This Month</div></div>
@@ -1614,6 +1779,36 @@ window.saveDebt=function(){
   const f=DB.get('finance',{income:[],expenses:[],savingsGoal:0,savingsCurrent:0,netWorth:[],debts:[]});
   f.debts.push({id:Date.now().toString(36),name:document.getElementById('dName').value,original:+document.getElementById('dOriginal').value,remaining:+document.getElementById('dRemaining').value});
   DB.set('finance',f);closeModal();navigate('money');
+};
+
+window.addShift=function(){
+  openModal(`<h2>Log Calile Shift</h2>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="shDate" value="${today()}"></div>
+      <div class="form-group"><label>Hours Worked</label><input type="number" id="shHours" step="0.5" min="0" placeholder="e.g. 8"></div>
+    </div>
+    <div class="form-group"><label>Notes (optional)</label><input id="shNotes" placeholder="e.g. Bartending, weddings setup..."></div>
+    <div class="callout-sage" style="margin-top:8px;"><span class="text-xs">$32/hr · Pay shown automatically</span></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveShift()">Save</button></div>`);
+};
+window.saveShift=function(){
+  const hours=+document.getElementById('shHours').value;
+  if(!hours)return;
+  const shifts=DB.get('calile_shifts',[]);
+  const date=document.getElementById('shDate').value;
+  shifts.push({id:Date.now().toString(36),date,hours,notes:document.getElementById('shNotes').value});
+  shifts.sort((a,b)=>a.date.localeCompare(b.date));
+  DB.set('calile_shifts',shifts);
+  // auto-add to finance income
+  const f=DB.get('finance',{income:[],expenses:[],savingsGoal:0,savingsCurrent:0,netWorth:[],debts:[]});
+  const month=date.slice(0,7);
+  f.income.push({id:Date.now().toString(36)+'_sh',label:`The Calile (${hours}h)`,amount:hours*32,month});
+  DB.set('finance',f);
+  closeModal();navigate('money');
+};
+window.deleteShift=function(id){
+  DB.set('calile_shifts',DB.get('calile_shifts',[]).filter(s=>s.id!==id));
+  navigate('money');
 };
 
 /* ===== SETTINGS ===== */
@@ -1761,6 +1956,573 @@ window.obsidianTest=async function(){
     status.style.color=result.ok?'var(--sage)':'var(--coral)';
   }
 };
+
+/* ===== 100KM ULTRA ===== */
+function renderUltra(el){
+  const ultraTarget=new Date('2026-09-11T12:00:00');
+  const now=new Date();
+  const daysLeft=Math.max(0,Math.ceil((ultraTarget-now)/86400000));
+  const workouts=DB.get('workouts',[]);
+  const runs=workouts.filter(w=>distanceTypes.includes(w.type));
+  const totalKm=runs.reduce((a,w)=>a+(w.distance||0),0);
+  const weekStart=new Date(now);weekStart.setDate(now.getDate()-now.getDay());
+  const weekStartStr=weekStart.toISOString().slice(0,10);
+  const weekKm=runs.filter(w=>w.date>=weekStartStr).reduce((a,w)=>a+(w.distance||0),0);
+  const longRuns=runs.filter(w=>w.type==='Run'&&w.distance>=10).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);
+  const notes=DB.get('ultra_notes',{plan:'',gear:'',nutrition:''});
+
+  // Training phase detection based on date
+  const phases=[
+    {name:'Base',start:'2026-01-01',end:'2026-05-31',class:'phase-base',label:'Build your aerobic base. Run 4×/week. Long run to 20km.'},
+    {name:'Build',start:'2026-06-01',end:'2026-07-31',class:'phase-build',label:'Increase weekly volume. Long runs to 40km. Back-to-back weekend runs.'},
+    {name:'Peak',start:'2026-08-01',end:'2026-08-28',class:'phase-peak',label:'Peak training. Longest runs. Simulate race conditions.'},
+    {name:'Taper',start:'2026-08-29',end:'2026-09-11',class:'phase-taper',label:'Cut volume 40%. Keep intensity. Trust the training.'},
+  ];
+  const todayStr=now.toISOString().slice(0,10);
+  const activePhase=phases.findIndex(p=>todayStr>=p.start&&todayStr<=p.end);
+  const currentPhase=phases[activePhase>=0?activePhase:0];
+
+  el.innerHTML=`
+  <div class="flex items-center justify-between mb-16">
+    <div><h1 class="page-title">100km Ultra</h1><p class="page-sub">Coondoo → Point Arkwright · with Zak Edrich</p></div>
+    <button class="btn btn-primary btn-sm" onclick="navigate('workouts')">+ Log Run</button>
+  </div>
+
+  <div class="countdown-card mb-20">
+    <div>
+      <div class="countdown-title">🏃 Race Day: 11 September 2026</div>
+      <div class="countdown-date">Coondoo Farm → Point Arkwright, QLD</div>
+    </div>
+    <div style="text-align:right">
+      <div class="countdown-num">${daysLeft}</div>
+      <div class="countdown-label">days to go</div>
+    </div>
+  </div>
+
+  <div class="grid grid-3 mb-20">
+    <div class="card card-sm text-center"><div class="stat-num color-sage">${totalKm.toFixed(1)}</div><div class="stat-label">Total km Logged</div></div>
+    <div class="card card-sm text-center"><div class="stat-num color-gold">${weekKm.toFixed(1)}</div><div class="stat-label">km This Week</div></div>
+    <div class="card card-sm text-center"><div class="stat-num" style="color:var(--accent)">${runs.length}</div><div class="stat-label">Runs Logged</div></div>
+  </div>
+
+  <div class="card mb-20">
+    <div class="card-title">📅 Training Phase</div>
+    <div class="phase-bar">
+      ${phases.map((p,i)=>`<div class="phase-block ${p.class} ${i===activePhase?'active':''}">${p.name}</div>`).join('')}
+    </div>
+    <div class="callout-${activePhase===0?'sage':activePhase===1?'gold':activePhase===2?'coral':'sage'} mt-8">
+      <span class="text-xs font-semi">Current: ${currentPhase.name}</span>
+      <p class="text-xs color-text2 mt-4">${currentPhase.label}</p>
+    </div>
+  </div>
+
+  <div class="card mb-20">
+    <div class="card-title">🏅 Long Runs (10km+)</div>
+    ${longRuns.length?longRuns.map(r=>`<div class="flex items-center justify-between mb-8">
+      <span class="text-sm">${fmtDate(r.date)}</span>
+      <div class="flex gap-8 items-center">
+        <span class="font-bold color-sage">${r.distance}km</span>
+        <span class="text-xs color-text2">${r.duration}min${r.distance?` · ${(r.duration/r.distance).toFixed(1)} min/km`:''}</span>
+      </div>
+    </div>`).join(''):'<div class="empty">No long runs yet. First 10km+ run will appear here.</div>'}
+  </div>
+
+  <div class="card mb-20">
+    <div class="card-title">📝 Race Notes</div>
+    <div class="form-group"><label>Training Plan / Weekly Schedule</label><textarea rows="3" placeholder="e.g. Mon: rest, Tue: 8km easy, Wed: intervals..." onchange="saveUltraNote('plan',this.value)">${(notes.plan||'').replace(/</g,'&lt;')}</textarea></div>
+    <div class="form-group"><label>Gear & Kit</label><textarea rows="2" placeholder="Shoes, poles, hydration vest, headlamp..." onchange="saveUltraNote('gear',this.value)">${(notes.gear||'').replace(/</g,'&lt;')}</textarea></div>
+    <div class="form-group"><label>Nutrition Strategy</label><textarea rows="2" placeholder="Gels, real food, hydration plan..." onchange="saveUltraNote('nutrition',this.value)">${(notes.nutrition||'').replace(/</g,'&lt;')}</textarea></div>
+  </div>
+  `;
+}
+window.saveUltraNote=function(k,v){const n=DB.get('ultra_notes',{plan:'',gear:'',nutrition:''});n[k]=v;DB.set('ultra_notes',n);};
+
+/* ===== NORTHSTAR AGENCY ===== */
+function renderNorthstar(el){
+  const leads=DB.get('ns_leads',[]);
+  const outreach=DB.get('ns_outreach',[]);
+  const goal=DB.get('ns_mrr_goal',10000);
+  const stages=['Prospect','Contacted','Meeting','Proposal','Closed'];
+  const stageColors={Prospect:'#6366F1',Contacted:'#0EA5E9',Meeting:'#EAB308',Proposal:'#F97316',Closed:'#22C55E'};
+  const now=new Date();
+  const weekStart=new Date(now);weekStart.setDate(now.getDate()-now.getDay());
+  const weekStartStr=weekStart.toISOString().slice(0,10);
+  const weekOutreach=outreach.filter(o=>o.date>=weekStartStr).reduce((a,o)=>a+(o.count||0),0);
+  const closedLeads=leads.filter(l=>l.stage==='Closed');
+  const mrr=closedLeads.reduce((a,l)=>a+(l.value||0),0);
+  const mrrPct=Math.min(100,goal?Math.round(mrr/goal*100):0);
+
+  el.innerHTML=`
+  <div class="flex items-center justify-between mb-16">
+    <div><h1 class="page-title">NORTHSTAR Agency</h1><p class="page-sub">AI automation for Brisbane trades · Target: $${goal.toLocaleString()}/month</p></div>
+    <div class="flex gap-8">
+      <button class="btn btn-secondary btn-sm" onclick="logOutreach()">+ Log Outreach</button>
+      <button class="btn btn-primary btn-sm" onclick="addLead()">+ Add Lead</button>
+    </div>
+  </div>
+
+  <div class="card mb-20" style="border-left:3px solid var(--sage);">
+    <div class="flex items-center justify-between mb-8">
+      <div><div class="text-xs font-semi color-text2 mb-4">MONTHLY RECURRING REVENUE</div><div style="font-size:2.5rem;font-weight:800;color:var(--sage);">$${mrr.toLocaleString()}</div></div>
+      <div style="text-align:right"><div class="text-xs color-text2 mb-4">Goal: $${goal.toLocaleString()}/mo</div><div class="font-bold">${mrrPct}%</div><button class="btn-ghost text-xs mt-4" onclick="setNSGoal()">Edit Goal</button></div>
+    </div>
+    <div class="revenue-bar"><div class="revenue-fill" style="width:${mrrPct}%"></div></div>
+    <div class="text-xs color-text2 mt-8">${closedLeads.length} closed client${closedLeads.length!==1?'s':''} · ${leads.length} total leads · ${weekOutreach} outreach this week</div>
+  </div>
+
+  <div class="grid grid-4 mb-20">
+    ${stages.slice(0,4).map(s=>{const c=leads.filter(l=>l.stage===s).length;return`<div class="card card-sm text-center"><div class="stat-num" style="color:${stageColors[s]}">${c}</div><div class="stat-label">${s}</div></div>`;}).join('')}
+  </div>
+
+  <div class="pipeline-grid mb-20">
+    ${stages.map(s=>{
+      const stageLeads=leads.filter(l=>l.stage===s);
+      return`<div class="pipeline-col">
+        <div class="pipeline-col-header" style="background:${stageColors[s]}22;color:${stageColors[s]}">${s} (${stageLeads.length})</div>
+        ${stageLeads.map(l=>`<div class="pipeline-card" onclick="editLead('${l.id}')">
+          <div class="font-semi text-sm">${l.name}</div>
+          ${l.trade?`<div class="text-xs color-text2 mt-2">${l.trade}</div>`:''}
+          ${l.value?`<div class="text-xs color-sage mt-2 font-semi">$${l.value.toLocaleString()}/mo</div>`:''}
+          ${l.nextAction?`<div class="text-xs color-coral mt-4">${l.nextAction}</div>`:''}
+        </div>`).join('')}
+        <button class="btn btn-ghost text-xs w-full" onclick="addLead('${s}')">+ Add</button>
+      </div>`;
+    }).join('')}
+  </div>
+
+  <div class="card">
+    <div class="flex items-center justify-between mb-12">
+      <div class="card-title" style="margin-bottom:0">📞 Outreach Log</div>
+      <button class="btn btn-secondary btn-sm" onclick="logOutreach()">+ Log</button>
+    </div>
+    ${outreach.length?outreach.slice().reverse().slice(0,8).map(o=>`<div class="flex items-center justify-between mb-6"><span class="text-sm">${shortDate(o.date)} · ${o.method}</span><div class="flex gap-8 items-center"><span class="tag tag-sage">${o.count} contact${o.count!==1?'s':''}</span><button class="btn-ghost text-xs" onclick="deleteOutreach('${o.id}')">✕</button></div></div>`).join(''):'<div class="empty text-xs">No outreach logged. Start reaching out to trades businesses.</div>'}
+  </div>
+  `;
+}
+
+window.addLead=function(stage='Prospect'){
+  const trades=['Roofing','Plumbing','Electrical','Concreting','Landscaping','HVAC','Painting','Other'];
+  const stages=['Prospect','Contacted','Meeting','Proposal','Closed'];
+  openModal(`<h2>Add Lead</h2>
+    <div class="form-group"><label>Business / Contact Name</label><input id="lName" placeholder="e.g. Brisbane Roofing Co."></div>
+    <div class="form-row">
+      <div class="form-group"><label>Trade</label><select id="lTrade">${trades.map(t=>`<option>${t}</option>`).join('')}</select></div>
+      <div class="form-group"><label>Stage</label><select id="lStage">${stages.map(s=>`<option ${s===stage?'selected':''}>${s}</option>`).join('')}</select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Monthly Value ($)</label><input type="number" id="lValue" placeholder="e.g. 1500"></div>
+      <div class="form-group"><label>Contact</label><input id="lContact" placeholder="Phone or email"></div>
+    </div>
+    <div class="form-group"><label>Next Action</label><input id="lNext" placeholder="e.g. Follow up call Tuesday"></div>
+    <div class="form-group"><label>Notes</label><textarea id="lNotes" rows="2"></textarea></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveLead()">Save</button></div>`);
+};
+
+window.saveLead=function(editId){
+  const leads=DB.get('ns_leads',[]);
+  const data={name:document.getElementById('lName').value,trade:document.getElementById('lTrade').value,stage:document.getElementById('lStage').value,value:+document.getElementById('lValue').value||0,contact:document.getElementById('lContact').value,nextAction:document.getElementById('lNext').value,notes:document.getElementById('lNotes').value};
+  if(!data.name)return;
+  if(editId){const l=leads.find(l=>l.id===editId);if(l)Object.assign(l,data);}
+  else{leads.push({id:Date.now().toString(36),...data,created:today()});}
+  DB.set('ns_leads',leads);closeModal();navigate('northstar');
+};
+
+window.editLead=function(id){
+  const l=DB.get('ns_leads',[]).find(l=>l.id===id);if(!l)return;
+  const trades=['Roofing','Plumbing','Electrical','Concreting','Landscaping','HVAC','Painting','Other'];
+  const stages=['Prospect','Contacted','Meeting','Proposal','Closed'];
+  openModal(`<h2>Edit Lead</h2>
+    <div class="form-group"><label>Business / Contact Name</label><input id="lName" value="${(l.name||'').replace(/"/g,'&quot;')}"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Trade</label><select id="lTrade">${trades.map(t=>`<option ${t===l.trade?'selected':''}>${t}</option>`).join('')}</select></div>
+      <div class="form-group"><label>Stage</label><select id="lStage">${stages.map(s=>`<option ${s===l.stage?'selected':''}>${s}</option>`).join('')}</select></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Monthly Value ($)</label><input type="number" id="lValue" value="${l.value||0}"></div>
+      <div class="form-group"><label>Contact</label><input id="lContact" value="${(l.contact||'').replace(/"/g,'&quot;')}"></div>
+    </div>
+    <div class="form-group"><label>Next Action</label><input id="lNext" value="${(l.nextAction||'').replace(/"/g,'&quot;')}"></div>
+    <div class="form-group"><label>Notes</label><textarea id="lNotes" rows="2">${(l.notes||'').replace(/</g,'&lt;')}</textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger btn-sm" onclick="deleteLead('${id}')">Delete</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveLead('${id}')">Save</button>
+    </div>`);
+};
+
+window.deleteLead=function(id){DB.set('ns_leads',DB.get('ns_leads',[]).filter(l=>l.id!==id));closeModal();navigate('northstar');};
+
+window.logOutreach=function(){
+  openModal(`<h2>Log Outreach</h2>
+    <div class="form-row">
+      <div class="form-group"><label>Date</label><input type="date" id="oDate" value="${today()}"></div>
+      <div class="form-group"><label>Contacts Reached</label><input type="number" id="oCount" value="1" min="1"></div>
+    </div>
+    <div class="form-group"><label>Method</label><select id="oMethod"><option>Cold Call</option><option>Cold Email</option><option>LinkedIn DM</option><option>Facebook Group</option><option>In Person</option><option>Referral</option></select></div>
+    <div class="form-group"><label>Notes</label><input id="oNotes" placeholder="e.g. Left voicemail with 3 roofers"></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveOutreach()">Save</button></div>`);
+};
+window.saveOutreach=function(){
+  const out=DB.get('ns_outreach',[]);
+  out.push({id:Date.now().toString(36),date:document.getElementById('oDate').value,count:+document.getElementById('oCount').value,method:document.getElementById('oMethod').value,notes:document.getElementById('oNotes').value});
+  DB.set('ns_outreach',out);closeModal();navigate('northstar');
+};
+window.deleteOutreach=function(id){DB.set('ns_outreach',DB.get('ns_outreach',[]).filter(o=>o.id!==id));navigate('northstar');};
+window.setNSGoal=function(){
+  const cur=DB.get('ns_mrr_goal',10000);
+  openModal(`<h2>Set MRR Goal</h2>
+    <div class="form-group"><label>Monthly Revenue Goal ($)</label><input type="number" id="nsGoal" value="${cur}"></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="DB.set('ns_mrr_goal',+document.getElementById('nsGoal').value||10000);closeModal();navigate('northstar')">Save</button></div>`);
+};
+
+/* ===== CLEAN STREAK ===== */
+function renderSobriety(el){
+  const data=DB.get('sobriety',{startDate:null,slips:[],substance:'Nicotine/Vaping',notes:''});
+  const slips=data.slips||[];
+  const lastSlip=slips.length?slips[slips.length-1].date:null;
+  const streakStart=lastSlip||(data.startDate||today());
+  const streakDays=Math.max(0,Math.floor((new Date()-new Date(streakStart+'T00:00:00'))/86400000));
+  const totalDays=data.startDate?Math.max(0,Math.floor((new Date()-new Date(data.startDate+'T00:00:00'))/86400000)):0;
+  const milestones=[{days:1,label:'1 day'},{days:3,label:'3 days'},{days:7,label:'1 week'},{days:14,label:'2 weeks'},{days:30,label:'1 month'},{days:60,label:'2 months'},{days:90,label:'3 months'},{days:180,label:'6 months'},{days:365,label:'1 year'}];
+
+  el.innerHTML=`
+  <div class="flex items-center justify-between mb-16">
+    <div><h1 class="page-title">Clean Streak</h1><p class="page-sub">Tracking: ${data.substance}</p></div>
+    <div class="flex gap-8">
+      ${!data.startDate?`<button class="btn btn-primary" onclick="setSobrietyStart()">Start Tracking</button>`:`<button class="btn btn-secondary btn-sm" onclick="editSobrietySettings()">Settings</button><button class="btn btn-danger btn-sm" onclick="logSlip()">Log Slip</button>`}
+    </div>
+  </div>
+
+  ${data.startDate?`
+  <div class="card mb-20" style="text-align:center;padding:40px 24px;">
+    <div class="sober-counter">${streakDays}</div>
+    <div class="sober-unit">days clean</div>
+    <div class="text-xs color-text2 mt-12">Since ${fmtDate(streakStart)} · ${slips.length} slip${slips.length!==1?'s':''} total</div>
+    ${streakDays>=7?`<div class="streak-badge mt-16" style="margin:0 auto;width:fit-content;">🔥 On a roll</div>`:''}
+  </div>
+
+  <div class="grid grid-2 mb-20">
+    <div class="card card-sm text-center"><div class="stat-num color-sage">${streakDays}</div><div class="stat-label">Current Streak</div></div>
+    <div class="card card-sm text-center"><div class="stat-num color-gold">${totalDays}</div><div class="stat-label">Total Days Free</div></div>
+  </div>
+
+  <div class="card mb-20">
+    <div class="card-title">🏆 Milestones</div>
+    <div class="flex flex-wrap gap-8">
+      ${milestones.map(m=>`<span class="milestone-badge ${streakDays>=m.days?'achieved':''}">${streakDays>=m.days?'✓ ':''} ${m.label}</span>`).join('')}
+    </div>
+  </div>
+
+  ${slips.length?`<div class="card mb-20">
+    <div class="card-title">📋 Slip Log</div>
+    ${slips.slice().reverse().map(s=>`<div class="flex items-center justify-between mb-8">
+      <span class="text-sm">${fmtDate(s.date)}${s.trigger?' — trigger: '+s.trigger:''}</span>
+      <button class="btn-ghost text-xs" onclick="deleteSlip('${s.id}')">✕</button>
+    </div>`).join('')}
+  </div>`:''}
+
+  <div class="card">
+    <div class="card-title">📝 Notes / Triggers to Avoid</div>
+    <textarea rows="3" placeholder="What triggers you? What helps you resist?" onchange="saveSobrietyNotes(this.value)">${(data.notes||'').replace(/</g,'&lt;')}</textarea>
+  </div>
+  `:`<div class="card text-center" style="padding:40px;">
+    <div style="font-size:3rem;margin-bottom:16px;">🛡️</div>
+    <h2 style="margin-bottom:8px;">Start Your Clean Streak</h2>
+    <p class="text-sm color-text2 mb-20">Track how long you've been free from smoking and vaping. Every day counts.</p>
+    <button class="btn btn-primary" onclick="setSobrietyStart()">Set Start Date</button>
+  </div>`}
+  `;
+}
+
+window.setSobrietyStart=function(){
+  const d=DB.get('sobriety',{startDate:null,slips:[],substance:'Nicotine/Vaping',notes:''});
+  openModal(`<h2>Start Clean Streak</h2>
+    <div class="form-group"><label>What are you quitting?</label><input id="sobSubstance" value="${d.substance||'Nicotine/Vaping'}"></div>
+    <div class="form-group"><label>Quit Date</label><input type="date" id="sobStart" value="${today()}"></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveSobrietyStart()">Start</button></div>`);
+};
+window.saveSobrietyStart=function(){
+  const d=DB.get('sobriety',{startDate:null,slips:[],substance:'Nicotine/Vaping',notes:''});
+  d.startDate=document.getElementById('sobStart').value;
+  d.substance=document.getElementById('sobSubstance').value;
+  DB.set('sobriety',d);closeModal();navigate('sobriety');
+};
+window.editSobrietySettings=function(){
+  const d=DB.get('sobriety',{startDate:null,slips:[],substance:'Nicotine/Vaping',notes:''});
+  openModal(`<h2>Clean Streak Settings</h2>
+    <div class="form-group"><label>Substance Tracking</label><input id="sobSubstance" value="${d.substance||'Nicotine/Vaping'}"></div>
+    <div class="form-group"><label>Start Date</label><input type="date" id="sobStart" value="${d.startDate||today()}"></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveSobrietyStart()">Save</button></div>`);
+};
+window.logSlip=function(){
+  openModal(`<h2>Log a Slip</h2>
+    <p class="text-sm color-text2 mb-16">It happens. Log it, learn from it, and reset the streak.</p>
+    <div class="form-group"><label>Date</label><input type="date" id="slipDate" value="${today()}"></div>
+    <div class="form-group"><label>What triggered it?</label><input id="slipTrigger" placeholder="e.g. Stress, social, boredom..."></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-danger" onclick="saveSlip()">Log Slip</button></div>`);
+};
+window.saveSlip=function(){
+  const d=DB.get('sobriety',{startDate:null,slips:[],substance:'Nicotine/Vaping',notes:''});
+  if(!d.slips)d.slips=[];
+  d.slips.push({id:Date.now().toString(36),date:document.getElementById('slipDate').value,trigger:document.getElementById('slipTrigger').value});
+  DB.set('sobriety',d);closeModal();navigate('sobriety');
+};
+window.deleteSlip=function(id){
+  const d=DB.get('sobriety',{startDate:null,slips:[],substance:'Nicotine/Vaping',notes:''});
+  d.slips=(d.slips||[]).filter(s=>s.id!==id);
+  DB.set('sobriety',d);navigate('sobriety');
+};
+window.saveSobrietyNotes=function(v){
+  const d=DB.get('sobriety',{startDate:null,slips:[],substance:'Nicotine/Vaping',notes:''});
+  d.notes=v;DB.set('sobriety',d);
+};
+
+/* ===== RELATIONSHIPS ===== */
+function renderRelationships(el){
+  const people=DB.get('relationships',[]);
+  const now=new Date();
+
+  function daysSince(dateStr){
+    if(!dateStr)return Infinity;
+    return Math.floor((now-new Date(dateStr+'T12:00:00'))/86400000);
+  }
+  function dotColor(days){
+    if(days===Infinity)return'red';
+    if(days<=7)return'green';
+    if(days<=21)return'yellow';
+    return'red';
+  }
+  function dotLabel(days){
+    if(days===Infinity)return'Never reached out';
+    if(days===0)return'Today';
+    if(days===1)return'Yesterday';
+    if(days<=7)return`${days}d ago`;
+    if(days<=30)return`${days}d ago`;
+    return`${days}d ago — reach out!`;
+  }
+
+  const sorted=[...people].sort((a,b)=>daysSince(a.lastContact)-daysSince(b.lastContact)).reverse();
+
+  el.innerHTML=`
+  <div class="flex items-center justify-between mb-16">
+    <div><h1 class="page-title">People</h1><p class="page-sub">Stay in touch with the ones who matter</p></div>
+    <button class="btn btn-primary btn-sm" onclick="addPerson()">+ Add Person</button>
+  </div>
+
+  ${people.length===0?`<div class="card text-center" style="padding:40px;">
+    <div style="font-size:3rem;margin-bottom:16px;">👥</div>
+    <h2 style="margin-bottom:8px;">Add the people who matter</h2>
+    <p class="text-sm color-text2 mb-20">Family, crew, friends — track when you last reached out so no one gets left behind.</p>
+    <button class="btn btn-primary" onclick="addPerson()">Add First Person</button>
+  </div>`:''}
+
+  ${sorted.map(p=>{
+    const days=daysSince(p.lastContact);
+    const color=dotColor(days);
+    return`<div class="rel-card">
+      <div class="flex items-center gap-12">
+        <div class="rel-dot ${color}"></div>
+        <div>
+          <div class="font-semi">${p.name}${p.relation?` <span class="text-xs color-text2">${p.relation}</span>`:''}</div>
+          <div class="text-xs color-text2 mt-2">${dotLabel(days)}</div>
+          ${p.notes?`<div class="text-xs color-text2 mt-2" style="font-style:italic;">${p.notes}</div>`:''}
+        </div>
+      </div>
+      <div class="flex gap-8">
+        <button class="btn btn-secondary btn-sm" onclick="contactedPerson('${p.id}')">✓ Reached Out</button>
+        <button class="btn-ghost text-xs" onclick="editPerson('${p.id}')">Edit</button>
+      </div>
+    </div>`;
+  }).join('')}
+  `;
+}
+
+window.addPerson=function(){
+  openModal(`<h2>Add Person</h2>
+    <div class="form-group"><label>Name</label><input id="pName" placeholder="e.g. Mum, Zak, Jamie..."></div>
+    <div class="form-row">
+      <div class="form-group"><label>Relation</label><input id="pRelation" placeholder="e.g. Family, Friend, Crew"></div>
+      <div class="form-group"><label>Last Contacted</label><input type="date" id="pLast" value="${today()}"></div>
+    </div>
+    <div class="form-group"><label>Notes</label><input id="pNotes" placeholder="Anything to remember about staying in touch..."></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="savePerson()">Save</button></div>`);
+};
+window.savePerson=function(editId){
+  const people=DB.get('relationships',[]);
+  const data={name:document.getElementById('pName').value,relation:document.getElementById('pRelation').value,lastContact:document.getElementById('pLast').value,notes:document.getElementById('pNotes').value};
+  if(!data.name)return;
+  if(editId){const p=people.find(p=>p.id===editId);if(p)Object.assign(p,data);}
+  else{people.push({id:Date.now().toString(36),...data});}
+  DB.set('relationships',people);closeModal();navigate('relationships');
+};
+window.editPerson=function(id){
+  const p=DB.get('relationships',[]).find(p=>p.id===id);if(!p)return;
+  openModal(`<h2>Edit Person</h2>
+    <div class="form-group"><label>Name</label><input id="pName" value="${(p.name||'').replace(/"/g,'&quot;')}"></div>
+    <div class="form-row">
+      <div class="form-group"><label>Relation</label><input id="pRelation" value="${(p.relation||'').replace(/"/g,'&quot;')}"></div>
+      <div class="form-group"><label>Last Contacted</label><input type="date" id="pLast" value="${p.lastContact||today()}"></div>
+    </div>
+    <div class="form-group"><label>Notes</label><input id="pNotes" value="${(p.notes||'').replace(/"/g,'&quot;')}"></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger btn-sm" onclick="deletePerson('${id}')">Delete</button>
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="savePerson('${id}')">Save</button>
+    </div>`);
+};
+window.contactedPerson=function(id){
+  const people=DB.get('relationships',[]);const p=people.find(p=>p.id===id);
+  if(p){p.lastContact=today();DB.set('relationships',people);showToast('Marked as contacted ✓');navigate('relationships');}
+};
+window.deletePerson=function(id){DB.set('relationships',DB.get('relationships',[]).filter(p=>p.id!==id));closeModal();navigate('relationships');};
+
+/* ===== FOCUS TIMER ===== */
+let focusInterval=null;
+let focusSecondsLeft=0;
+let focusTotalSeconds=0;
+let focusRunning=false;
+let focusMode='work';
+
+function renderFocus(el){
+  const sessions=DB.get('focus_sessions',[]);
+  const todaySessions=sessions.filter(s=>s.date===today());
+  const todayMinutes=todaySessions.reduce((a,s)=>a+(s.duration||0),0);
+  const task=DB.get('focus_task','');
+
+  el.innerHTML=`
+  <div class="flex items-center justify-between mb-16">
+    <div><h1 class="page-title">Focus Timer</h1><p class="page-sub">${todayMinutes} deep work minutes today</p></div>
+  </div>
+
+  <div class="card mb-20">
+    <div class="focus-wrap">
+      <div class="focus-modes">
+        <button class="active" id="fBtn25" onclick="setFocusMode(25,5,'fBtn25')">25 / 5</button>
+        <button id="fBtn50" onclick="setFocusMode(50,10,'fBtn50')">50 / 10</button>
+        <button id="fBtn90" onclick="setFocusMode(90,20,'fBtn90')">90 / 20</button>
+      </div>
+
+      <div class="focus-ring">
+        <svg><circle class="focus-track" cx="110" cy="110" r="98"/><circle class="focus-progress" id="focusRing" cx="110" cy="110" r="98"/></svg>
+        <div class="focus-time">
+          <span id="focusDisplay">25:00</span>
+          <small id="focusModeLabel">WORK</small>
+        </div>
+      </div>
+
+      <div style="width:100%;max-width:320px;">
+        <input id="focusTaskInput" placeholder="What are you working on?" style="text-align:center;border-radius:20px;" value="${task.replace(/"/g,'&quot;')}" onchange="DB.set('focus_task',this.value)">
+      </div>
+
+      <div class="flex gap-12">
+        <button class="btn btn-primary" id="focusStartBtn" onclick="toggleFocus()">▶ Start</button>
+        <button class="btn btn-secondary" onclick="resetFocus()">↺ Reset</button>
+      </div>
+    </div>
+  </div>
+
+  ${todaySessions.length?`<div class="card">
+    <div class="card-title">Today's Sessions</div>
+    <div class="focus-log">
+      ${todaySessions.slice().reverse().map(s=>`<div class="flex items-center justify-between mb-8">
+        <span class="text-sm">${s.task||'Deep Work'}</span>
+        <span class="tag tag-sage">${s.duration} min</span>
+      </div>`).join('')}
+    </div>
+    <div class="mt-12 text-sm color-sage font-bold">${todayMinutes} minutes total today</div>
+  </div>`:''}
+  `;
+
+  // Init timer state
+  if(focusSecondsLeft>0){
+    updateFocusDisplay(focusSecondsLeft,focusTotalSeconds);
+    document.getElementById('focusStartBtn').textContent=focusRunning?'⏸ Pause':'▶ Resume';
+  }else{
+    setFocusModeInit(25*60,'fBtn25');
+  }
+}
+
+function setFocusModeInit(seconds,activeBtn){
+  focusSecondsLeft=seconds;focusTotalSeconds=seconds;focusRunning=false;
+  updateFocusDisplay(seconds,seconds);
+  document.querySelectorAll('.focus-modes button').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById(activeBtn);if(btn)btn.classList.add('active');
+  const sb=document.getElementById('focusStartBtn');if(sb)sb.textContent='▶ Start';
+}
+
+window.setFocusMode=function(work,rest,btnId){
+  if(focusRunning)return;
+  clearInterval(focusInterval);
+  focusSecondsLeft=work*60;focusTotalSeconds=work*60;focusMode='work';
+  window._focusWorkMin=work;window._focusRestMin=rest;
+  updateFocusDisplay(focusSecondsLeft,focusTotalSeconds);
+  document.querySelectorAll('.focus-modes button').forEach(b=>b.classList.remove('active'));
+  const btn=document.getElementById(btnId);if(btn)btn.classList.add('active');
+  const sb=document.getElementById('focusStartBtn');if(sb)sb.textContent='▶ Start';
+  const ml=document.getElementById('focusModeLabel');if(ml)ml.textContent='WORK';
+};
+
+window.toggleFocus=function(){
+  if(focusRunning){
+    clearInterval(focusInterval);focusRunning=false;
+    const sb=document.getElementById('focusStartBtn');if(sb)sb.textContent='▶ Resume';
+  }else{
+    focusRunning=true;
+    const sb=document.getElementById('focusStartBtn');if(sb)sb.textContent='⏸ Pause';
+    focusInterval=setInterval(()=>{
+      focusSecondsLeft--;
+      updateFocusDisplay(focusSecondsLeft,focusTotalSeconds);
+      if(focusSecondsLeft<=0){
+        clearInterval(focusInterval);focusRunning=false;
+        if(focusMode==='work'){
+          // Log session
+          const task=DB.get('focus_task','');
+          const sessions=DB.get('focus_sessions',[]);
+          sessions.push({id:Date.now().toString(36),date:today(),duration:Math.round(focusTotalSeconds/60),task});
+          DB.set('focus_sessions',sessions);
+          showToast('✓ Session complete! Take a break.',3000);
+          focusMode='rest';
+          const restMin=window._focusRestMin||5;
+          focusSecondsLeft=restMin*60;focusTotalSeconds=restMin*60;
+          const ml=document.getElementById('focusModeLabel');if(ml)ml.textContent='REST';
+          updateFocusDisplay(focusSecondsLeft,focusTotalSeconds);
+          const sb=document.getElementById('focusStartBtn');if(sb)sb.textContent='▶ Start Break';
+        }else{
+          showToast('Break over. Ready to go again?',3000);
+          focusMode='work';
+          const workMin=window._focusWorkMin||25;
+          focusSecondsLeft=workMin*60;focusTotalSeconds=workMin*60;
+          const ml=document.getElementById('focusModeLabel');if(ml)ml.textContent='WORK';
+          updateFocusDisplay(focusSecondsLeft,focusTotalSeconds);
+          const sb=document.getElementById('focusStartBtn');if(sb)sb.textContent='▶ Start';
+          navigate('focus');
+        }
+      }
+    },1000);
+  }
+};
+
+window.resetFocus=function(){
+  clearInterval(focusInterval);focusRunning=false;
+  const workMin=window._focusWorkMin||25;
+  focusSecondsLeft=workMin*60;focusTotalSeconds=workMin*60;focusMode='work';
+  updateFocusDisplay(focusSecondsLeft,focusTotalSeconds);
+  const sb=document.getElementById('focusStartBtn');if(sb)sb.textContent='▶ Start';
+  const ml=document.getElementById('focusModeLabel');if(ml)ml.textContent='WORK';
+};
+
+function updateFocusDisplay(left,total){
+  const m=Math.floor(left/60);const s=left%60;
+  const disp=document.getElementById('focusDisplay');
+  if(disp)disp.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const ring=document.getElementById('focusRing');
+  if(ring){
+    const circumference=2*Math.PI*98;
+    const dashOffset=circumference*(1-(left/total));
+    ring.style.strokeDasharray=circumference;
+    ring.style.strokeDashoffset=dashOffset;
+  }
+}
 
 /* ===== INIT ===== */
 function init(){
