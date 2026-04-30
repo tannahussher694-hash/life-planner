@@ -1,4 +1,4 @@
-const CACHE = 'life-planner-v3';
+const CACHE = 'life-planner-v4';
 
 const ASSETS = [
   '/life-planner/',
@@ -13,7 +13,13 @@ self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE).then(cache => cache.addAll(ASSETS))
   );
-  self.skipWaiting();
+  // Don't auto-skip — let the page trigger skipWaiting via postMessage
+  // so the reload is controlled and intentional
+});
+
+// Allow page to trigger activation when ready
+self.addEventListener('message', e => {
+  if (e.data && e.data.type === 'SKIP_WAITING') self.skipWaiting();
 });
 
 // Activate — clean up old caches

@@ -289,6 +289,7 @@ const sections=[
 const SUPA_URL='https://glnspleesodpbbyyodyu.supabase.co';
 const SUPA_KEY='sb_publishable_5xL4l_--zVlOnSKHgXTZog_3aW__5b6';
 let _supa=null;
+let _realtimeChannel=null;
 function getSupa(){if(!_supa&&window.supabase)_supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);return _supa;}
 
 /* ===== DATA LAYER — in-memory cache + localStorage + Supabase ===== */
@@ -365,7 +366,9 @@ const DB={
   // Listen for changes from other devices (phone ↔ laptop live sync)
   subscribeRealtime(){
     const sb=getSupa();if(!sb)return;
-    sb.channel('lt_sync')
+    // Clean up any existing channel before re-subscribing (handles reconnects)
+    if(_realtimeChannel){try{sb.removeChannel(_realtimeChannel);}catch(e){}  _realtimeChannel=null;}
+    _realtimeChannel=sb.channel('lt_sync')
       .on('postgres_changes',{event:'*',schema:'public',table:'user_data'},({eventType,new:n,old:o})=>{
         if(eventType==='DELETE'&&o){delete _cache[o.key];localStorage.removeItem('lt_'+o.key);}
         else if(n&&n.key){_cache[n.key]=n.value;localStorage.setItem('lt_'+n.key,JSON.stringify(n.value));}
@@ -2536,11 +2539,41 @@ function init(){
 
 document.addEventListener('DOMContentLoaded',init);
 
+// Re-sync when app comes back into focus (tab switch, phone unlock, alt-tab)
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible') DB.loadFromCloud();
+});
+
+// Re-sync + re-subscribe when network comes back online
+window.addEventListener('online',()=>{
+  DB.loadFromCloud().then(()=>DB.subscribeRealtime());
+});
+
 /* ===== SERVICE WORKER ===== */
 if('serviceWorker' in navigator){
-  window.addEventListener('load', () => {
+  window.addEventListener('load',()=>{
     navigator.serviceWorker.register('/life-planner/sw.js')
-      .catch(err => console.warn('SW registration failed:', err));
+      .then(reg=>{
+        // When a new SW version is found, tell it to activate immediately
+        reg.addEventListener('updatefound',()=>{
+          const nw=reg.installing;
+          nw.addEventListener('statechange',()=>{
+            if(nw.state==='installed'&&navigator.serviceWorker.controller){
+              nw.postMessage({type:'SKIP_WAITING'});
+            }
+          });
+        });
+        // Check for updates every time the page gains focus
+        document.addEventListener('visibilitychange',()=>{
+          if(document.visibilityState==='visible') reg.update();
+        });
+      })
+      .catch(err=>console.warn('SW registration failed:',err));
+    // When SW takes control (new version activated), reload once to run fresh code
+    let _reloading=false;
+    navigator.serviceWorker.addEventListener('controllerchange',()=>{
+      if(!_reloading){_reloading=true;window.location.reload();}
+    });
   });
 }
 </script>
