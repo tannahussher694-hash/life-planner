@@ -12,6 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
 :root{
 --bg:#FFFFFF;--bg2:#F1F5F9;--card:rgba(37,99,235,0.04);--card-border:rgba(37,99,235,0.14);
@@ -218,15 +219,94 @@ const sections=[
   {id:'settings',label:'Settings',icon:'settings'},
 ];
 
-/* ===== DATA LAYER ===== */
+/* ===== SUPABASE CONFIG ===== */
+const SUPA_URL='https://glnspleesodpbbyyodyu.supabase.co';
+const SUPA_KEY='sb_publishable_5xL4l_--zVlOnSKHgXTZog_3aW__5b6';
+let _supa=null;
+function getSupa(){if(!_supa&&window.supabase)_supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);return _supa;}
+
+/* ===== DATA LAYER — in-memory cache + localStorage + Supabase ===== */
+// Cache seeds instantly from localStorage so reads are always synchronous
+const _cache={};
+(function seedCache(){for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k&&k.startsWith('lt_')){try{_cache[k.slice(3)]=JSON.parse(localStorage.getItem(k));}catch(e){}}}})();
+
 const DB={
-  get(k,def=null){try{const v=localStorage.getItem('lt_'+k);return v?JSON.parse(v):def;}catch(e){return def;}},
-  set(k,v){try{localStorage.setItem('lt_'+k,JSON.stringify(v));}catch(e){console.warn('Storage error',e);}},
-  del(k){localStorage.removeItem('lt_'+k);},
-  keys(){const r=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('lt_'))r.push(k.slice(3));}return r;},
-  exportAll(){const d={};for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith('lt_'))d[k]=localStorage.getItem(k);}return d;},
-  importAll(d){Object.entries(d).forEach(([k,v])=>{if(k.startsWith('lt_'))localStorage.setItem(k,v);});},
-  clearSection(prefix){for(let i=localStorage.length-1;i>=0;i--){const k=localStorage.key(i);if(k.startsWith('lt_'+prefix))localStorage.removeItem(k);}}
+  // Reads are synchronous — from in-memory cache, no network wait
+  get(k,def=null){return k in _cache?_cache[k]:def;},
+
+  // Writes: update cache + localStorage immediately, then sync to Supabase async
+  set(k,v){
+    _cache[k]=v;
+    try{localStorage.setItem('lt_'+k,JSON.stringify(v));}catch(e){}
+    const sb=getSupa();
+    if(sb)sb.from('user_data').upsert({key:k,value:v,updated_at:new Date().toISOString()})
+      .then(({error})=>{if(error)console.warn('Supabase write:',error.message);});
+  },
+
+  del(k){
+    delete _cache[k];
+    localStorage.removeItem('lt_'+k);
+    const sb=getSupa();
+    if(sb)sb.from('user_data').delete().eq('key',k)
+      .then(({error})=>{if(error)console.warn('Supabase delete:',error.message);});
+  },
+
+  keys(){return Object.keys(_cache);},
+
+  exportAll(){const d={};Object.entries(_cache).forEach(([k,v])=>{d['lt_'+k]=JSON.stringify(v);});return d;},
+
+  importAll(d){
+    Object.entries(d).forEach(([k,v])=>{
+      if(k.startsWith('lt_')){
+        try{
+          const key=k.slice(3),val=JSON.parse(v);
+          _cache[key]=val;
+          localStorage.setItem(k,v);
+          const sb=getSupa();
+          if(sb)sb.from('user_data').upsert({key,value:val,updated_at:new Date().toISOString()});
+        }catch(e){}
+      }
+    });
+  },
+
+  clearSection(prefix){
+    Object.keys(_cache).filter(k=>k.startsWith(prefix)).forEach(k=>{
+      delete _cache[k];
+      localStorage.removeItem('lt_'+k);
+    });
+    const sb=getSupa();
+    if(sb)sb.from('user_data').delete().like('key',prefix+'%')
+      .then(({error})=>{if(error)console.warn('Supabase clearSection:',error.message);});
+  },
+
+  // Pull all rows from Supabase on load — Supabase wins on conflict
+  async loadFromCloud(){
+    const sb=getSupa();if(!sb)return;
+    const{data,error}=await sb.from('user_data').select('key,value');
+    if(error){console.warn('Supabase load:',error.message);return;}
+    if(!data||!data.length)return;
+    let changed=false;
+    data.forEach(({key,value})=>{
+      if(JSON.stringify(_cache[key])!==JSON.stringify(value)){
+        _cache[key]=value;
+        localStorage.setItem('lt_'+key,JSON.stringify(value));
+        changed=true;
+      }
+    });
+    if(changed)navigate(currentSection);
+  },
+
+  // Listen for changes from other devices (phone ↔ laptop live sync)
+  subscribeRealtime(){
+    const sb=getSupa();if(!sb)return;
+    sb.channel('lt_sync')
+      .on('postgres_changes',{event:'*',schema:'public',table:'user_data'},({eventType,new:n,old:o})=>{
+        if(eventType==='DELETE'&&o){delete _cache[o.key];localStorage.removeItem('lt_'+o.key);}
+        else if(n&&n.key){_cache[n.key]=n.value;localStorage.setItem('lt_'+n.key,JSON.stringify(n.value));}
+        navigate(currentSection);
+      })
+      .subscribe();
+  }
 };
 
 /* ===== OBSIDIAN SYNC ===== */
@@ -1688,6 +1768,8 @@ function init(){
   if(theme==='dark')document.documentElement.classList.add('dark');
   buildNav();
   navigate('today');
+  // Pull latest data from Supabase, then subscribe for live cross-device updates
+  DB.loadFromCloud().then(()=>DB.subscribeRealtime());
 }
 
 document.addEventListener('DOMContentLoaded',init);
