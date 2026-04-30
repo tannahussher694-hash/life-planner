@@ -57,9 +57,32 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:
 
 @media(max-width:768px){
 .sidebar{transform:translateX(-100%);}
-.main{margin-left:0;padding:20px 16px;padding-bottom:calc(var(--bottombar) + 24px);}
+.main{margin-left:0;padding:20px 16px;padding-bottom:calc(var(--bottombar) + 68px);}
 .bottombar{display:block;}
 }
+
+/* ===== Sidebar accordion groups ===== */
+.nav-group{width:100%;}
+.nav-group-btn{display:flex;align-items:center;gap:12px;padding:10px 24px;color:#94A3B8;font-size:.875rem;font-weight:500;background:none;border:none;border-left:3px solid transparent;width:100%;cursor:pointer;text-align:left;transition:all .2s;}
+.nav-group-btn:hover{color:#E2E8F0;background:rgba(255,255,255,0.05);}
+.nav-group-btn.active{color:#fff;background:rgba(255,255,255,0.12);border-left-color:var(--gold);}
+.nav-group-btn svg:first-child{width:20px;height:20px;flex-shrink:0;}
+.nav-group-btn .nav-label{flex:1;}
+.nav-chevron{width:13px!important;height:13px!important;flex-shrink:0;transition:transform .25s;opacity:.5;}
+.nav-group.open .nav-chevron{transform:rotate(90deg);opacity:1;}
+.nav-subs{overflow:hidden;max-height:0;transition:max-height .3s ease;}
+.nav-subs a{display:flex;align-items:center;gap:10px;padding:7px 24px 7px 48px;color:#64748B;text-decoration:none;font-size:.8rem;font-weight:500;border-left:3px solid transparent;transition:all .2s;}
+.nav-subs a:hover{color:#CBD5E1;background:rgba(255,255,255,0.04);}
+.nav-subs a.active{color:#fff;background:rgba(255,255,255,0.1);border-left-color:var(--gold);}
+.nav-subs a svg{width:15px;height:15px;flex-shrink:0;}
+
+/* ===== Mobile sub-nav strip ===== */
+.sub-nav{display:none;position:fixed;bottom:var(--bottombar);left:0;right:0;height:52px;background:rgba(15,23,42,0.97);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,0.07);z-index:99;overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.sub-nav-inner{display:flex;align-items:center;height:100%;padding:0 4px;min-width:max-content;}
+.sub-nav a{display:flex;flex-direction:column;align-items:center;gap:2px;color:#64748B;text-decoration:none;font-size:.55rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:6px 14px;white-space:nowrap;transition:color .2s;}
+.sub-nav a.active{color:var(--sage);}
+.sub-nav a svg{width:16px;height:16px;}
+@media(min-width:769px){.sub-nav{display:none!important;}}
 
 /* Cards */
 .card{background:var(--card);backdrop-filter:blur(12px);border:1px solid var(--card-border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;}
@@ -276,24 +299,60 @@ const icons={
 };
 
 /* ===== NAVIGATION ===== */
-const sections=[
+const navGroups=[
   {id:'today',label:'Today',icon:'home'},
-  {id:'dailylog',label:'Daily Log',icon:'log'},
-  {id:'calendar',label:'Calendar',icon:'calendar'},
-  {id:'workouts',label:'Workouts',icon:'workout'},
-  {id:'goals',label:'2026 Goals',icon:'goals'},
-  {id:'habits',label:'Habits',icon:'habits'},
-  {id:'journal',label:'Journal',icon:'journal'},
-  {id:'gratitude',label:'Gratitude',icon:'gratitude'},
-  {id:'reading',label:'Reading',icon:'reading'},
+  {id:'daily',label:'Daily',icon:'log',sub:[
+    {id:'dailylog',label:'Daily Log',icon:'log'},
+    {id:'journal',label:'Journal',icon:'journal'},
+    {id:'gratitude',label:'Gratitude',icon:'gratitude'},
+    {id:'sobriety',label:'Clean Streak',icon:'sobriety'},
+  ]},
+  {id:'training',label:'Training',icon:'workout',sub:[
+    {id:'workouts',label:'Workouts',icon:'workout'},
+    {id:'ultra',label:'100km Ultra',icon:'ultra'},
+  ]},
+  {id:'mind',label:'Mind',icon:'focus',sub:[
+    {id:'focus',label:'Focus',icon:'focus'},
+    {id:'reading',label:'Reading',icon:'reading'},
+    {id:'habits',label:'Habits',icon:'habits'},
+  ]},
+  {id:'plan',label:'Plan',icon:'calendar',sub:[
+    {id:'goals',label:'Goals',icon:'goals'},
+    {id:'calendar',label:'Calendar',icon:'calendar'},
+  ]},
   {id:'money',label:'Money',icon:'money'},
-  {id:'ultra',label:'100km Ultra',icon:'ultra'},
   {id:'northstar',label:'NORTHSTAR',icon:'northstar'},
-  {id:'sobriety',label:'Clean Streak',icon:'sobriety'},
-  {id:'relationships',label:'People',icon:'relationships'},
-  {id:'focus',label:'Focus',icon:'focus'},
-  {id:'settings',label:'Settings',icon:'settings'},
+  {id:'more',label:'More',icon:'settings',sub:[
+    {id:'relationships',label:'People',icon:'relationships'},
+    {id:'settings',label:'Settings',icon:'settings'},
+  ]},
 ];
+
+// Find which top-level group owns a given section id
+function findGroup(sectionId){
+  for(const g of navGroups){
+    if(g.id===sectionId)return g;
+    if(g.sub&&g.sub.some(s=>s.id===sectionId))return g;
+  }
+  return null;
+}
+
+// Lazily create or update the mobile sub-nav strip
+function updateSubNav(group){
+  let sn=document.getElementById('subNav');
+  if(!sn){
+    sn=document.createElement('div');sn.id='subNav';sn.className='sub-nav';
+    const bar=document.getElementById('bottombar');
+    if(bar)bar.parentNode.insertBefore(sn,bar);
+  }
+  if(group&&group.sub){
+    sn.style.display='block';
+    sn.innerHTML=`<div class="sub-nav-inner">${group.sub.map(s=>`<a href="#" data-section="${s.id}" onclick="event.preventDefault();navigate('${s.id}')" class="${s.id===currentSection?'active':''}">${icons[s.icon]}<span>${s.label}</span></a>`).join('')}</div>`;
+  }else{
+    sn.style.display='none';
+    sn.innerHTML='';
+  }
+}
 
 /* ===== SUPABASE CONFIG ===== */
 const SUPA_URL='https://glnspleesodpbbyyodyu.supabase.co';
@@ -746,7 +805,36 @@ function destroyCharts(){Object.values(chartInstances).forEach(c=>{try{c.destroy
 function navigate(id){
   currentSection=id;
   destroyCharts();
-  document.querySelectorAll('.sidebar nav a, .bottombar a').forEach(a=>{a.classList.toggle('active',a.dataset.section===id);});
+  const group=findGroup(id);
+
+  // — Sidebar: clear all active states —
+  document.querySelectorAll('.sidebar .nav-group-btn,.sidebar nav a[data-section]').forEach(el=>el.classList.remove('active'));
+
+  // Mark active sub-item link
+  const activeLink=document.querySelector(`.sidebar nav a[data-section="${id}"]`);
+  if(activeLink)activeLink.classList.add('active');
+
+  // Auto-expand parent group + mark its button active
+  if(group&&group.sub){
+    const wrap=document.querySelector(`.nav-group[data-group="${group.id}"]`);
+    const subs=document.getElementById(`group-subs-${group.id}`);
+    const btn=wrap?wrap.querySelector('.nav-group-btn'):null;
+    if(wrap&&subs&&!wrap.classList.contains('open')){
+      wrap.classList.add('open');
+      subs.style.maxHeight=subs.scrollHeight+'px';
+    }
+    if(btn)btn.classList.add('active');
+  }
+
+  // — Bottom bar: highlight the parent group icon —
+  document.querySelectorAll('.bottombar a').forEach(a=>{
+    a.classList.toggle('active', group?(a.dataset.group===group.id||a.dataset.section===id):false);
+  });
+
+  // — Mobile sub-nav strip —
+  updateSubNav(group);
+
+  // — Render page —
   const main=document.getElementById('mainContent');
   main.innerHTML='';
   main.className='main fade-in';
@@ -759,17 +847,61 @@ function navigate(id){
   }
 }
 
+window.toggleGroup=function(groupId){
+  const wrap=document.querySelector(`.nav-group[data-group="${groupId}"]`);
+  const subs=document.getElementById(`group-subs-${groupId}`);
+  if(!wrap||!subs)return;
+  const opening=!wrap.classList.contains('open');
+  wrap.classList.toggle('open',opening);
+  subs.style.maxHeight=opening?subs.scrollHeight+'px':'0';
+};
+
 function buildNav(){
   const side=document.getElementById('sideNav');
   const bot=document.getElementById('bottomNav');
   side.innerHTML='';bot.innerHTML='';
-  sections.forEach(s=>{
-    const a1=document.createElement('a');a1.href='#';a1.dataset.section=s.id;
-    a1.innerHTML=icons[s.icon]+`<span>${s.label}</span>`;
-    a1.onclick=e=>{e.preventDefault();navigate(s.id);};
-    side.appendChild(a1);
-    const a2=a1.cloneNode(true);a2.onclick=e=>{e.preventDefault();navigate(s.id);};
-    bot.appendChild(a2);
+
+  navGroups.forEach(g=>{
+    /* ---- SIDEBAR ---- */
+    if(g.sub){
+      // Accordion group
+      const wrap=document.createElement('div');
+      wrap.className='nav-group';wrap.dataset.group=g.id;
+
+      const btn=document.createElement('button');
+      btn.className='nav-group-btn';
+      btn.innerHTML=`${icons[g.icon]}<span class="nav-label">${g.label}</span><svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>`;
+      btn.onclick=()=>toggleGroup(g.id);
+      wrap.appendChild(btn);
+
+      const subWrap=document.createElement('div');
+      subWrap.className='nav-subs';subWrap.id=`group-subs-${g.id}`;
+      g.sub.forEach(s=>{
+        const a=document.createElement('a');
+        a.href='#';a.dataset.section=s.id;
+        a.innerHTML=`${icons[s.icon]}<span>${s.label}</span>`;
+        a.onclick=e=>{e.preventDefault();navigate(s.id);};
+        subWrap.appendChild(a);
+      });
+      wrap.appendChild(subWrap);
+      side.appendChild(wrap);
+
+      // Bottom bar: parent icon → navigates to first sub
+      const bBtn=document.createElement('a');
+      bBtn.href='#';bBtn.dataset.group=g.id;
+      bBtn.innerHTML=`${icons[g.icon]}<span>${g.label}</span>`;
+      bBtn.onclick=e=>{e.preventDefault();navigate(g.sub[0].id);};
+      bot.appendChild(bBtn);
+    }else{
+      // Standalone
+      const a1=document.createElement('a');a1.href='#';a1.dataset.section=g.id;
+      a1.innerHTML=`${icons[g.icon]}<span>${g.label}</span>`;
+      a1.onclick=e=>{e.preventDefault();navigate(g.id);};
+      side.appendChild(a1);
+
+      const a2=a1.cloneNode(true);a2.onclick=e=>{e.preventDefault();navigate(g.id);};
+      bot.appendChild(a2);
+    }
   });
 }
 
