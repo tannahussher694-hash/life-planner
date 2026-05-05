@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="theme-color" content="#F7F3EE">
+<meta name="theme-color" content="#0A0A0A">
 <link rel="manifest" href="manifest.json">
 <title>Life Planner</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,34 +15,42 @@
 /* ============================================================
    DESIGN TOKENS
    ============================================================ */
+/* ============================================================
+   BLACK & GOLD LUXURY PALETTE — always-dark, v2 redesign
+   ============================================================ */
 :root {
-  /* Warm off-white palette */
-  --bg:        oklch(97.5% 0.008 75);
-  --bg2:       oklch(94% 0.010 72);
-  --bg3:       oklch(91% 0.012 70);
-  --surface:   oklch(99% 0.004 75);
-  --border:    oklch(88% 0.014 70);
-  --border2:   oklch(82% 0.018 68);
+  /* Backgrounds — pure blacks and very dark charcoals */
+  --bg:        #0A0A0A;
+  --bg2:       #111111;
+  --bg3:       #1A1A1A;
+  --surface:   #141414;
+  --border:    #242424;
+  --border2:   #2E2E2E;
 
   /* Text */
-  --text:      oklch(22% 0.010 60);
-  --text2:     oklch(48% 0.012 65);
-  --text3:     oklch(68% 0.010 68);
-  --text-inv:  oklch(98% 0.003 75);
+  --text:      #F0EDE8;
+  --text2:     #9A9488;
+  --text3:     #5C574F;
+  --text-inv:  #0A0A0A;
 
-  /* Accent — Sage green & Terracotta (same chroma+lightness) */
-  --sage:      oklch(54% 0.12 160);
-  --sage-light:oklch(92% 0.06 155);
-  --sage-mid:  oklch(72% 0.09 158);
-  --terra:     oklch(54% 0.12 40);
-  --terra-light:oklch(92% 0.06 42);
-  --gold:      oklch(72% 0.14 82);
-  --gold-light:oklch(93% 0.07 82);
-  --ink:       oklch(18% 0.018 240);
+  /* Gold accent — primary brand colour */
+  --gold:      #C9A84C;
+  --gold-light:#1E1908;
+  --gold-mid:  #A07830;
+
+  /* Keep sage/terra as secondary accents, tuned for dark context */
+  --sage:      #5A8A6A;
+  --sage-light:#0D1F13;
+  --sage-mid:  #3D6B4E;
+  --terra:     #B06040;
+  --terra-light:#1E0E08;
+
+  /* Ink — the darkest surface (sidebar) */
+  --ink:       #050505;
 
   /* Functional */
-  --danger:    oklch(56% 0.20 25);
-  --success:   oklch(52% 0.14 158);
+  --danger:    #C0392B;
+  --success:   #27AE60;
 
   /* Layout */
   --sidebar-w: 240px;
@@ -51,11 +59,11 @@
   --radius-xs: 7px;
   --radius-pill: 100px;
 
-  /* Shadows */
-  --shadow-xs: 0 1px 3px oklch(0% 0 0 / 0.06);
-  --shadow-sm: 0 2px 8px oklch(0% 0 0 / 0.07), 0 0 0 1px oklch(0% 0 0 / 0.04);
-  --shadow:    0 4px 20px oklch(0% 0 0 / 0.08), 0 1px 4px oklch(0% 0 0 / 0.04);
-  --shadow-lg: 0 12px 40px oklch(0% 0 0 / 0.12), 0 2px 8px oklch(0% 0 0 / 0.06);
+  /* Shadows — heavier on pure black for depth */
+  --shadow-xs: 0 1px 3px rgba(0,0,0,0.5);
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,168,76,0.06);
+  --shadow:    0 4px 20px rgba(0,0,0,0.7), 0 1px 4px rgba(0,0,0,0.5);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.8), 0 2px 8px rgba(0,0,0,0.6);
 
   /* Typography */
   --font-serif: 'DM Serif Display', Georgia, serif;
@@ -64,29 +72,6 @@
   /* Easing */
   --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out:cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* Dark mode */
-.dark {
-  --bg:        oklch(14% 0.012 240);
-  --bg2:       oklch(18% 0.014 238);
-  --bg3:       oklch(22% 0.016 236);
-  --surface:   oklch(16% 0.013 240);
-  --border:    oklch(28% 0.018 235);
-  --border2:   oklch(35% 0.020 232);
-  --text:      oklch(92% 0.006 75);
-  --text2:     oklch(65% 0.010 72);
-  --text3:     oklch(45% 0.012 70);
-  --sage:      oklch(68% 0.12 160);
-  --sage-light:oklch(28% 0.08 158);
-  --terra:     oklch(68% 0.12 40);
-  --terra-light:oklch(28% 0.08 40);
-  --gold:      oklch(78% 0.14 82);
-  --gold-light:oklch(30% 0.09 82);
-  --shadow-xs: 0 1px 3px oklch(0% 0 0 / 0.3);
-  --shadow-sm: 0 2px 8px oklch(0% 0 0 / 0.35);
-  --shadow:    0 4px 20px oklch(0% 0 0 / 0.4);
-  --shadow-lg: 0 12px 40px oklch(0% 0 0 / 0.5);
 }
 
 /* ============================================================
@@ -103,7 +88,7 @@ body {
   transition: background 0.4s, color 0.4s;
   overflow-x: hidden;
 }
-::selection { background: var(--sage); color: white; }
+::selection { background: var(--gold); color: #0A0A0A; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -126,18 +111,18 @@ body {
 }
 .sidebar-logo {
   padding: 28px 24px 20px;
-  border-bottom: 1px solid oklch(100% 0 0 / 0.07);
+  border-bottom: 1px solid rgba(201,168,76,0.12);
 }
 .sidebar-logo h1 {
   font-family: var(--font-serif);
   font-size: 1.35rem;
-  color: white;
+  color: var(--gold);
   letter-spacing: -0.01em;
   line-height: 1.1;
 }
 .sidebar-logo p {
   font-size: 0.72rem;
-  color: oklch(55% 0.010 240);
+  color: #5C574F;
   margin-top: 3px;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -150,14 +135,14 @@ body {
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: oklch(42% 0.010 240);
+  color: #3D3830;
   padding: 16px 20px 6px;
 }
 
 .nav-item {
   display: flex; align-items: center; gap: 10px;
   padding: 9px 20px;
-  color: oklch(58% 0.012 240);
+  color: #706860;
   font-size: 0.835rem;
   font-weight: 500;
   cursor: pointer;
@@ -167,12 +152,12 @@ body {
   border: none; background: none;
   width: 100%; text-align: left;
 }
-.nav-item:hover { color: oklch(88% 0.008 240); background: oklch(100% 0 0 / 0.04); }
+.nav-item:hover { color: #E8E0D0; background: rgba(201,168,76,0.06); }
 .nav-item.active {
-  color: white;
-  background: oklch(100% 0 0 / 0.10);
+  color: var(--gold);
+  background: rgba(201,168,76,0.10);
 }
-.nav-item.active .nav-dot { background: var(--sage); }
+.nav-item.active .nav-dot { background: var(--gold); }
 .nav-dot {
   width: 6px; height: 6px; border-radius: 50%;
   background: transparent; flex-shrink: 0;
@@ -183,7 +168,7 @@ body {
 
 .sidebar-footer {
   padding: 16px 20px;
-  border-top: 1px solid oklch(100% 0 0 / 0.07);
+  border-top: 1px solid rgba(201,168,76,0.12);
   display: flex; align-items: center; gap: 10px;
 }
 .sidebar-avatar {
@@ -193,8 +178,8 @@ body {
   font-size: 0.85rem; font-weight: 700; color: white;
   flex-shrink: 0;
 }
-.sidebar-user-name { font-size: 0.8rem; font-weight: 600; color: oklch(75% 0.010 240); }
-.sidebar-user-sub  { font-size: 0.68rem; color: oklch(45% 0.010 240); }
+.sidebar-user-name { font-size: 0.8rem; font-weight: 600; color: #9A9488; }
+.sidebar-user-sub  { font-size: 0.68rem; color: #5C574F; }
 
 /* Main content */
 .main {
@@ -278,9 +263,9 @@ body {
   min-height: 180px;
   display: flex; flex-direction: column; justify-content: flex-end;
 }
-.hero-card.morning  { background: linear-gradient(135deg, oklch(48% 0.14 200) 0%, oklch(54% 0.12 160) 100%); }
-.hero-card.afternoon{ background: linear-gradient(135deg, oklch(52% 0.13 55) 0%, oklch(54% 0.12 40) 100%); }
-.hero-card.evening  { background: linear-gradient(135deg, oklch(26% 0.08 260) 0%, oklch(32% 0.10 240) 100%); }
+.hero-card.morning  { background: linear-gradient(135deg, #1A1200 0%, #2A1E00 50%, #1A1008 100%); border: 1px solid rgba(201,168,76,0.25); }
+.hero-card.afternoon{ background: linear-gradient(135deg, #1A0E00 0%, #2A1800 50%, #1E1008 100%); border: 1px solid rgba(201,168,76,0.20); }
+.hero-card.evening  { background: linear-gradient(135deg, #080808 0%, #141414 50%, #0A0E14 100%); border: 1px solid rgba(201,168,76,0.15); }
 .hero-card::before {
   content: '';
   position: absolute; inset: 0;
@@ -374,8 +359,8 @@ body {
   display: flex; align-items: center; justify-content: center;
 }
 .habit-check.done {
-  background: var(--sage);
-  border-color: var(--sage);
+  background: var(--gold);
+  border-color: var(--gold);
   animation: habitPop 0.4s var(--ease-out);
 }
 @keyframes habitPop {
@@ -407,7 +392,7 @@ body {
 .progress-bar { height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
 .progress-fill {
   height: 100%; border-radius: 3px;
-  background: linear-gradient(90deg, var(--sage), var(--sage-mid));
+  background: linear-gradient(90deg, var(--gold-mid), var(--gold));
   transition: width 0.6s var(--ease-out);
 }
 .progress-fill.terra { background: linear-gradient(90deg, var(--terra), var(--gold)); }
@@ -431,8 +416,8 @@ input, textarea, select {
   user-select: text;
 }
 input:focus, textarea:focus, select:focus {
-  border-color: var(--sage);
-  box-shadow: 0 0 0 3px oklch(54% 0.12 160 / 0.15);
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.15);
 }
 textarea { resize: vertical; min-height: 88px; line-height: 1.6; }
 select { cursor: pointer; }
@@ -455,20 +440,20 @@ label {
   white-space: nowrap;
 }
 .btn-primary {
-  background: var(--sage); color: white;
-  box-shadow: 0 2px 8px oklch(54% 0.12 160 / 0.35);
+  background: var(--gold); color: #0A0A0A;
+  box-shadow: 0 2px 8px rgba(201,168,76,0.35);
 }
-.btn-primary:hover { background: oklch(50% 0.12 160); transform: translateY(-1px); box-shadow: 0 4px 14px oklch(54% 0.12 160 / 0.4); }
+.btn-primary:hover { background: var(--gold-mid); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(201,168,76,0.5); }
 .btn-secondary {
   background: var(--bg2); color: var(--text);
   border: 1.5px solid var(--border);
 }
-.btn-secondary:hover { border-color: var(--sage); background: var(--bg); }
+.btn-secondary:hover { border-color: var(--gold); background: var(--bg); color: var(--gold); }
 .btn-ghost { background: transparent; color: var(--text2); padding: 7px 10px; }
 .btn-ghost:hover { color: var(--text); background: var(--bg2); }
 .btn-sm { padding: 6px 13px; font-size: 0.78rem; }
-.btn-terra { background: var(--terra); color: white; box-shadow: 0 2px 8px oklch(54% 0.12 40 / 0.3); }
-.btn-terra:hover { background: oklch(50% 0.12 40); transform: translateY(-1px); }
+.btn-terra { background: var(--terra); color: white; box-shadow: 0 2px 8px rgba(176,96,64,0.3); }
+.btn-terra:hover { background: #8A4830; transform: translateY(-1px); }
 
 /* ============================================================
    TAGS / CHIPS
@@ -481,7 +466,7 @@ label {
 }
 .tag-sage  { background: var(--sage-light);  color: var(--sage); }
 .tag-terra { background: var(--terra-light); color: var(--terra); }
-.tag-gold  { background: var(--gold-light);  color: oklch(48% 0.14 82); }
+.tag-gold  { background: var(--gold-light);  color: var(--gold); }
 .tag-muted { background: var(--bg3); color: var(--text3); }
 
 /* ============================================================
@@ -489,7 +474,7 @@ label {
    ============================================================ */
 .modal-overlay {
   display: none; position: fixed; inset: 0;
-  background: oklch(0% 0 0 / 0.5);
+  background: rgba(0,0,0,0.75);
   z-index: 1000; align-items: center; justify-content: center;
   padding: 20px;
   backdrop-filter: blur(4px);
@@ -543,7 +528,7 @@ label {
 .focus-ring circle { fill: none; stroke-width: 8; }
 .focus-track  { stroke: var(--bg3); }
 .focus-prog   {
-  stroke: var(--sage); stroke-dasharray: 565; stroke-dashoffset: 0;
+  stroke: var(--gold); stroke-dasharray: 565; stroke-dashoffset: 0;
   stroke-linecap: round;
   transition: stroke-dashoffset 1s linear, stroke 0.4s;
 }
@@ -606,8 +591,8 @@ label {
   font-size: 0.82rem; font-weight: 600; cursor: pointer;
   transition: all 0.2s; color: var(--text2);
 }
-.mood-btn.active { background: var(--sage); color: white; border-color: var(--sage); }
-.mood-btn:hover:not(.active) { border-color: var(--sage); color: var(--sage); }
+.mood-btn.active { background: var(--gold); color: #0A0A0A; border-color: var(--gold); }
+.mood-btn:hover:not(.active) { border-color: var(--gold); color: var(--gold); }
 
 /* ============================================================
    AI PANEL
@@ -657,7 +642,7 @@ label {
   align-self: flex-start;
 }
 .ai-msg.user {
-  background: var(--sage); color: white;
+  background: var(--gold); color: #0A0A0A;
   border-radius: 14px 14px 4px 14px;
   align-self: flex-end;
 }
@@ -674,23 +659,23 @@ label {
 }
 .ai-send-btn {
   width: 36px; height: 36px; border-radius: 50%; border: none;
-  background: var(--sage); color: white; cursor: pointer;
+  background: var(--gold); color: #0A0A0A; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.2s; flex-shrink: 0;
 }
-.ai-send-btn:hover { background: oklch(50% 0.12 160); transform: scale(1.05); }
+.ai-send-btn:hover { background: var(--gold-mid); transform: scale(1.05); }
 
 .ai-fab {
   position: fixed; bottom: 24px; right: 24px;
   width: 52px; height: 52px; border-radius: 50%;
-  background: linear-gradient(135deg, var(--sage), var(--terra));
+  background: linear-gradient(135deg, var(--gold) 0%, var(--gold-mid) 100%);
   border: none; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 20px oklch(54% 0.12 160 / 0.5);
+  box-shadow: 0 4px 20px rgba(201,168,76,0.4);
   z-index: 500; transition: all 0.3s var(--ease-out);
-  color: white; font-size: 1.2rem;
+  color: #0A0A0A; font-size: 1.2rem;
 }
-.ai-fab:hover { transform: scale(1.08); box-shadow: 0 6px 24px oklch(54% 0.12 160 / 0.6); }
+.ai-fab:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(201,168,76,0.6); }
 
 /* ============================================================
    TOAST
@@ -1094,7 +1079,19 @@ const defaultHabits=['Meditate 10 min','Read 20 pages','No phone first hour','Ex
    ============================================================ */
 let currentSection = 'today';
 let chartInstances = {};
-function destroyCharts(){Object.values(chartInstances).forEach(c=>{try{c.destroy();}catch(e){}});chartInstances={};}
+function destroyCharts(){
+  // Destroy all tracked chart instances
+  Object.values(chartInstances).forEach(c=>{try{c.destroy();}catch(e){}});
+  chartInstances={};
+  // Defensive sweep: destroy any orphaned Chart.js instances on canvas elements
+  // (covers goal charts or any chart instantiated outside chartInstances)
+  if(window.Chart){
+    document.querySelectorAll('canvas').forEach(canvas=>{
+      const existing=Chart.getChart(canvas);
+      if(existing){try{existing.destroy();}catch(e){}}
+    });
+  }
+}
 
 const navConfig = [
   { section:'today',   label:'Today',       icon:'home'    },
@@ -1113,6 +1110,7 @@ const navConfig = [
   { section:'sobriety',label:'Clean Streak',icon:'shield'  },
   { section:'relationships',label:'People', icon:'people'  },
   { section:'rewards',  label:'Rewards',     icon:'trophy'  },
+  { section:'archive',  label:'Archive',     icon:'archive' },
   { section:'settings',label:'Settings',    icon:'settings'},
 ];
 
@@ -1121,7 +1119,7 @@ const navSections = [
   { label:'Plan',     items:['goals','calendar'] },
   { label:'Growth',   items:['reading','workouts','ultra'] },
   { label:'Life',     items:['money','sobriety','relationships'] },
-  { label:'',         items:['rewards','settings'] },
+  { label:'',         items:['archive','rewards','settings'] },
 ];
 
 function svgIcon(name){
@@ -1204,7 +1202,7 @@ function navigate(id){
   // Render
   const main = document.getElementById('main-content');
   main.innerHTML = '';
-  const renderers = {today:renderToday,journal:renderJournal,habits:renderHabits,focus:renderFocus,goals:renderGoals,calendar:renderCalendar,dailylog:renderDailyLog,gratitude:renderGratitude,reading:renderReading,workouts:renderWorkouts,ultra:renderUltra,money:renderMoney,northstar:renderNorthstar,sobriety:renderSobriety,relationships:renderRelationships,rewards:renderAchievements,settings:renderSettings};
+  const renderers = {today:renderToday,journal:renderJournal,habits:renderHabits,focus:renderFocus,goals:renderGoals,calendar:renderCalendar,dailylog:renderDailyLog,gratitude:renderGratitude,reading:renderReading,workouts:renderWorkouts,ultra:renderUltra,money:renderMoney,northstar:renderNorthstar,sobriety:renderSobriety,relationships:renderRelationships,rewards:renderAchievements,archive:renderArchive,settings:renderSettings};
   try{if(renderers[id])renderers[id](main);}
   catch(err){main.innerHTML=`<div class="page"><div class="callout terra"><strong>Render error in "${id}"</strong><pre style="margin-top:8px;font-size:.75rem;white-space:pre-wrap">${err.message}</pre></div></div>`;}
 }
@@ -1295,9 +1293,9 @@ function renderToday(el){
   const ws = weekStart.toISOString().slice(0,10);
   const weekW = workouts.filter(w=>w.date>=ws).length;
   const weekKm = workouts.filter(w=>w.date>=ws&&(w.type==='Run'||w.type==='Walk')).reduce((a,w)=>a+(w.distance||0),0);
-  const gratitude = DB.get('gratitude_'+today(),[' ',' ',' ']);
-  const intentions = DB.get('intentions_'+tomorrow(),[' ',' ',' ']);
-  const yesterdayIntentions = DB.get('intentions_'+today(),[' ',' ',' ']);
+  const gratitude = DB.get('gratitude_'+today(),['','','']);
+  const intentions = DB.get('intentions_'+tomorrow(),['','','']);
+  const yesterdayIntentions = DB.get('intentions_'+today(),['','','']);
   const intentChecks = DB.get('intention_checks_'+today(),{});
   const featGoals = goals.slice(0,3);
 
@@ -1387,7 +1385,7 @@ function renderToday(el){
         <div class="card-title" style="margin-bottom:8px">Today's intentions (from yesterday)</div>
         ${yesterdayIntentions.map((v,i)=>v&&v.trim()&&v.trim()!==' '?`
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-            <button class="check-btn ${intentChecks[i]?'checked':''}" onclick="toggleIntent(${i})"></button>
+            <button class="check-btn ${intentChecks[i]?'checked':''}" onclick="toggleYesterdayIntent(${i},this)"></button>
             <span style="font-size:.875rem;${intentChecks[i]?'opacity:.4;text-decoration:line-through':''}">${v.replace(/</g,'&lt;')}</span>
           </div>`:'').join('')}` : ''}
       </div>
@@ -1429,8 +1427,22 @@ window.toggleTodayHabit=function(id){
   navigate('today');
 };
 window.toggleIntent=function(i){const ch=DB.get('intention_checks_'+today(),{});ch[i]=!ch[i];DB.set('intention_checks_'+today(),ch);navigate('today');};
-window.saveGratitude=function(i,v){const g=DB.get('gratitude_'+today(),[' ',' ',' ']);g[i]=v;DB.set('gratitude_'+today(),g);};
-window.saveTomorrowIntention=function(i,v){const t=DB.get('intentions_'+tomorrow(),[' ',' ',' ']);t[i]=v;DB.set('intentions_'+tomorrow(),t);};
+// toggleYesterdayIntent: checks off a "today's intentions from yesterday" item without
+// triggering a full navigate('today'), which would wipe any in-progress text in the
+// Tomorrow's Intentions inputs above.
+window.toggleYesterdayIntent=function(i,el){
+  const ch=DB.get('intention_checks_'+today(),{});
+  ch[i]=!ch[i];
+  DB.set('intention_checks_'+today(),ch);
+  const btn=el;
+  const span=el.nextElementSibling;
+  if(ch[i]){btn.classList.add('checked');if(span){span.style.opacity='0.4';span.style.textDecoration='line-through';}}
+  else{btn.classList.remove('checked');if(span){span.style.opacity='';span.style.textDecoration='';}}
+};
+window.saveGratitude=function(i,v){const g=DB.get('gratitude_'+today(),['','','']);g[i]=v;DB.set('gratitude_'+today(),g);};
+// saveTomorrowIntention: uses empty strings (not spaces) as defaults so the
+// yesterdayIntentions.some() filter works correctly and inputs appear truly empty.
+window.saveTomorrowIntention=function(i,v){const t=DB.get('intentions_'+tomorrow(),['','','']);t[i]=v;DB.set('intentions_'+tomorrow(),t);};
 
 /* ============================================================
    RENDER: JOURNAL
@@ -1704,7 +1716,9 @@ window.addGoal=function(){
 };
 window.saveGoal=function(){
   const goals=DB.get('goals_2026',[]);
-  goals.push({id:Date.now().toString(36),title:document.getElementById('g-title').value,category:document.getElementById('g-cat').value,why:document.getElementById('g-why').value,status:document.getElementById('g-status').value,milestones:[]});
+  // progressLog:[] must be initialised on creation — if omitted, future
+  // progress logging (.push) would throw on undefined.
+  goals.push({id:Date.now().toString(36),title:document.getElementById('g-title').value,category:document.getElementById('g-cat').value,why:document.getElementById('g-why').value,status:document.getElementById('g-status').value,milestones:[],progressLog:[]});
   DB.set('goals_2026',goals);closeModal();navigate('goals');
 };
 window.editGoal=function(id){
@@ -1720,7 +1734,22 @@ window.editGoal=function(id){
       <button class="btn btn-primary" onclick="saveEditGoal('${id}')">Save</button>
     </div>`);
 };
-window.saveEditGoal=function(id){const goals=DB.get('goals_2026',[]);const g=goals.find(x=>x.id===id);if(!g)return;g.title=document.getElementById('eg-title').value;g.category=document.getElementById('eg-cat').value;g.why=document.getElementById('eg-why').value;g.status=document.getElementById('eg-status').value;DB.set('goals_2026',goals);closeModal();navigate('goals');};
+window.saveEditGoal=function(id){
+  const goals=DB.get('goals_2026',[]);
+  const g=goals.find(x=>x.id===id);
+  if(!g)return;
+  // Only update editable fields — progressLog and milestones are intentionally
+  // preserved by mutating in-place so historical data is never overwritten.
+  g.title=document.getElementById('eg-title').value;
+  g.category=document.getElementById('eg-cat').value;
+  g.why=document.getElementById('eg-why').value;
+  g.status=document.getElementById('eg-status').value;
+  // Back-fill progressLog if this is an older goal that was created without it.
+  if(!Array.isArray(g.progressLog))g.progressLog=[];
+  DB.set('goals_2026',goals);
+  closeModal();
+  navigate('goals');
+};
 window.deleteGoal=function(id){if(!confirm('Delete this goal?'))return;DB.set('goals_2026',DB.get('goals_2026',[]).filter(g=>g.id!==id));closeModal();navigate('goals');};
 window.addMilestone=function(gid){
   openModal(`<h2 class="modal-title">Add Milestone</h2>
@@ -1920,6 +1949,98 @@ window.saveCalEventNotes=function(id){
 };
 
 /* ============================================================
+   RENDER: ARCHIVE
+   ============================================================ */
+function renderArchive(el){
+  // Collect all entries from the three sources
+  const entries=[];
+
+  // 1. Journal entries — stored as array under 'journal_entries'
+  (DB.get('journal_entries',[])).forEach(e=>{
+    if(e&&e.text&&e.text.trim())entries.push({type:'journal',date:e.date||today(),text:e.text,mood:e.mood,id:e.id});
+  });
+
+  // 2. Gratitude entries — stored per-day as 'gratitude_YYYY-MM-DD'
+  DB.keys().filter(k=>k.startsWith('gratitude_')).forEach(k=>{
+    const date=k.replace('gratitude_','');
+    const items=(DB.get(k,[])).filter(v=>v&&v.trim()&&v.trim()!==' ');
+    if(items.length)entries.push({type:'gratitude',date,items,id:'grat_'+date});
+  });
+
+  // 3. Daily log reflections — stored per-day as 'daylog_YYYY-MM-DD'
+  DB.keys().filter(k=>k.startsWith('daylog_')).forEach(k=>{
+    const date=k.replace('daylog_','');
+    const log=DB.get(k,{});
+    const r=log.reflection||{};
+    const hasContent=r.win||r.learned||r.tomorrow;
+    if(hasContent)entries.push({type:'dailylog',date,win:r.win,learned:r.learned,tomorrow:r.tomorrow,mood:log.mood,id:'dl_'+date});
+  });
+
+  // Sort reverse-chronological
+  entries.sort((a,b)=>b.date.localeCompare(a.date));
+
+  // Filter state stored in module-level var
+  if(!window._archiveFilter)window._archiveFilter='all';
+  const filter=window._archiveFilter;
+  const visible=filter==='all'?entries:entries.filter(e=>e.type===filter);
+
+  // Colour map
+  const typeStyle={
+    journal:  {border:'var(--sage)',  label:'Journal',   tag:'tag-sage'},
+    gratitude:{border:'var(--gold)',  label:'Gratitude', tag:'tag-gold'},
+    dailylog: {border:'var(--terra)', label:'Daily Log', tag:'tag-muted'},
+  };
+
+  const filterBtn=(f,label)=>`<button onclick="window._archiveFilter='${f}';navigate('archive')" style="padding:6px 14px;border-radius:20px;border:1px solid ${filter===f?'var(--gold)':'var(--border)'};background:${filter===f?'var(--gold)':'var(--bg2)'};color:${filter===f?'#0A0A0A':'var(--text)'};font-size:.8rem;cursor:pointer">${label}</button>`;
+
+  const entryHTML=visible.length===0
+    ?'<div class="empty" style="margin-top:40px">No entries yet. Start journaling, logging gratitude, or filling in your daily log.</div>'
+    :visible.map(e=>{
+      const s=typeStyle[e.type];
+      if(e.type==='journal'){
+        return`<div style="border-left:3px solid ${s.border};background:var(--bg2);border-radius:0 var(--radius-xs) var(--radius-xs) 0;padding:14px 16px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span class="text-xs text-muted">${fmtDate(e.date)}</span>
+            <span class="tag ${s.tag}" style="font-size:.7rem">${s.label}${e.mood?' · '+e.mood:''}</span>
+          </div>
+          <div style="font-size:.875rem;line-height:1.6;white-space:pre-wrap">${e.text.replace(/</g,'&lt;').slice(0,400)}${e.text.length>400?'…':''}</div>
+        </div>`;
+      }
+      if(e.type==='gratitude'){
+        return`<div style="border-left:3px solid ${s.border};background:var(--bg2);border-radius:0 var(--radius-xs) var(--radius-xs) 0;padding:14px 16px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span class="text-xs text-muted">${fmtDate(e.date)}</span>
+            <span class="tag ${s.tag}" style="font-size:.7rem">${s.label}</span>
+          </div>
+          <ul style="margin:0;padding-left:16px;font-size:.875rem;line-height:1.8">${e.items.map(v=>`<li>${v.replace(/</g,'&lt;')}</li>`).join('')}</ul>
+        </div>`;
+      }
+      if(e.type==='dailylog'){
+        const rows=[[e.win,'Win'],[e.learned,'Learned'],[e.tomorrow,'Tomorrow']].filter(([v])=>v&&v.trim());
+        return`<div style="border-left:3px solid ${s.border};background:var(--bg2);border-radius:0 var(--radius-xs) var(--radius-xs) 0;padding:14px 16px;margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <span class="text-xs text-muted">${fmtDate(e.date)}</span>
+            <span class="tag ${s.tag}" style="font-size:.7rem">${s.label}${e.mood!=null?` · Mood ${e.mood}`:''}</span>
+          </div>
+          ${rows.map(([v,label])=>`<div style="font-size:.8rem;color:var(--text3);margin-bottom:2px">${label}</div><div style="font-size:.875rem;line-height:1.5;margin-bottom:8px;white-space:pre-wrap">${v.replace(/</g,'&lt;').slice(0,300)}${v.length>300?'…':''}</div>`).join('')}
+        </div>`;
+      }
+      return'';
+    }).join('');
+
+  el.innerHTML=`<div class="page">
+    <div class="page-header"><h1 class="page-title">Archive</h1></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+      ${filterBtn('all','All ('+entries.length+')')}
+      ${filterBtn('journal','Journal')}
+      ${filterBtn('gratitude','Gratitude')}
+      ${filterBtn('dailylog','Daily Log')}
+    </div>
+    ${entryHTML}
+  </div>`;
+}
+
+/* ============================================================
    RENDER: DAILY LOG
    ============================================================ */
 function renderDailyLog(el){
@@ -1986,7 +2107,7 @@ window.saveDLN=function(obj,k,v){const d=today();const l=DB.get('daylog_'+d,{slo
    RENDER: GRATITUDE
    ============================================================ */
 function renderGratitude(el){
-  const todayGrat=DB.get('gratitude_'+today(),[' ',' ',' ']);
+  const todayGrat=DB.get('gratitude_'+today(),['','','']);
   const allGrat=DB.keys().filter(k=>k.startsWith('gratitude_')).sort().reverse().slice(0,30);
 
   el.innerHTML=`<div class="page">
